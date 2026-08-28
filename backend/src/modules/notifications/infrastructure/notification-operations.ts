@@ -3,7 +3,7 @@ import type {
   LegacyUnregisterPushTokenRequest,
   RegisterPushTokenRequest,
   UnregisterPushTokenRequest,
-} from '@web-app-demo/contracts'
+} from '@ai-fitness-coach/contracts'
 import { createHash, randomUUID, timingSafeEqual } from 'node:crypto'
 
 import {

@@ -104,7 +104,7 @@ the same repository-derived host port. If one already owns that port, the other 
 without tearing the owner down. To reuse a database another process manages, set
 `TEST_SKIP_DOCKER=1` with its explicit test-only URL.
 
-The integration and Docker smoke runners refuse database names that do not end with `_test` unless an override is set intentionally. This protects `web_app_demo` development data from test writes.
+The integration and Docker smoke runners refuse database names that do not end with `_test` unless an override is set intentionally. This protects `ai_fitness_coach` development data from test writes.
 
 The Docker smoke test uses a unique Compose project and host port for every invocation, builds the backend image, starts it against its own `postgres_test`, waits for `/health/ready`, verifies DB-backed token auth, and removes only the isolated containers, network, and volume it created.
 
@@ -159,7 +159,7 @@ changing product code.
 Useful env:
 
 ```bash
-TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:<test-port>/web_app_demo_test?schema=public"
+TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:<test-port>/ai_fitness_coach_test?schema=public"
 POSTGRES_TEST_PORT=<test-port>
 E2E_BACKEND_PORT=<backend-port>
 E2E_WEB_PORT=<web-port>
@@ -193,7 +193,7 @@ Prerequisites:
 
 - Java 17+.
 - Xcode/iOS Simulator for iOS, or Android Studio/emulator for Android.
-- An installed Expo development build with `bundleIdentifier/package` set to `com.webappdemo.mobile`. Maestro should not run this template flow through Expo Go.
+- An installed Expo development build with `bundleIdentifier/package` set to `com.example.aifitnesscoach`. Maestro should not run this template flow through Expo Go.
 - A backend started against Docker Compose `postgres_test`, reachable at the `EXPO_PUBLIC_API_URL` used when Metro serves the bundle.
 - A host-reachable `E2E_API_HEALTH_URL` for runner preflight, for example `http://<LAN_IP>:3000/health`.
 - A host-reachable Metro URL in `MAESTRO_DEV_SERVER_URL`, for example `http://<LAN_IP>:8081`.
@@ -209,7 +209,7 @@ a custom test port.
 docker compose version
 docker info
 docker compose --env-file backend/.env up -d postgres_test
-export TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:54330/web_app_demo_test?schema=public"
+export TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:54330/ai_fitness_coach_test?schema=public"
 export LAN_IP=<your-machine-lan-ip>
 export BACKEND_PORT=3000
 export METRO_PORT=8081
@@ -247,9 +247,9 @@ Useful env:
 
 ```bash
 MAESTRO_DEVICE="iPhone 16 Pro"
-MAESTRO_APP_ID=com.webappdemo.mobile
+MAESTRO_APP_ID=com.example.aifitnesscoach
 MAESTRO_DEV_SERVER_URL=http://<LAN_IP>:8081
-MAESTRO_DEV_CLIENT_SCHEME=exp+mobile
+MAESTRO_DEV_CLIENT_SCHEME=exp+ai-fitness-coach
 MAESTRO_MIN_VERSION=2.4.0
 E2E_DISPLAY_NAME="Mobile E2E User"
 E2E_EMAIL="mobile-e2e@example.com"

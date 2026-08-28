@@ -150,7 +150,7 @@ export function createApp({
   // }
   app.get('/', (c) => {
     return c.json({
-      name: 'web_app_demo backend',
+      name: 'AI Fitness Coach backend',
       status: 'ok',
     })
   })
@@ -192,7 +192,7 @@ export function createApp({
 
   app.doc('/openapi.json', {
     openapi: '3.0.0',
-    info: { title: 'web_app_demo API', version: '1.0.0' },
+    info: { title: 'AI Fitness Coach API', version: '1.0.0' },
   })
   app.notFound((c) => c.json(errorResponse('NOT_FOUND', 'Route not found'), 404))
   app.onError(handleError)

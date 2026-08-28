@@ -1,4 +1,4 @@
-import type { SubscriptionState } from '@web-app-demo/contracts';
+import type { SubscriptionState } from '@ai-fitness-coach/contracts';
 
 export function formatSubscriptionState(state: SubscriptionState) {
   const label = state.replaceAll('_', ' ');

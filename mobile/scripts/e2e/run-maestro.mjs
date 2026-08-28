@@ -31,10 +31,12 @@ const testIds = {
 runMaestroPolicyAudit()
 
 const appConfig = readAppConfig()
-const appId = process.env.MAESTRO_APP_ID ?? process.env.APP_ID ?? 'com.webappdemo.mobile'
+const appId = process.env.MAESTRO_APP_ID ?? process.env.APP_ID ?? 'com.example.aifitnesscoach'
 const devServerUrl = requireDevServerUrl()
 const devClientScheme =
-  process.env.MAESTRO_DEV_CLIENT_SCHEME ?? defaultDevClientScheme(appConfig) ?? 'exp+mobile'
+  process.env.MAESTRO_DEV_CLIENT_SCHEME ??
+  defaultDevClientScheme(appConfig) ??
+  'exp+ai-fitness-coach'
 const devClientUrl = buildDevClientUrl(devClientScheme, devServerUrl)
 const email =
   process.env.E2E_EMAIL ??

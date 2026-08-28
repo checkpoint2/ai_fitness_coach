@@ -43,20 +43,20 @@ if (googleIosUrlScheme) {
 
 module.exports = {
   expo: {
-    name: 'mobile',
-    slug: 'mobile',
+    name: 'AI Fitness Coach',
+    slug: 'ai-fitness-coach',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
-    scheme: 'mobile',
+    scheme: 'ai-fitness-coach',
     userInterfaceStyle: 'automatic',
     ios: {
-      bundleIdentifier: 'com.webappdemo.mobile',
+      bundleIdentifier: 'com.example.aifitnesscoach',
       icon: './assets/expo.icon',
       usesAppleSignIn: true,
     },
     android: {
-      package: 'com.webappdemo.mobile',
+      package: 'com.example.aifitnesscoach',
       adaptiveIcon: {
         backgroundColor: '#E6F4FE',
         foregroundImage: './assets/images/android-icon-foreground.png',

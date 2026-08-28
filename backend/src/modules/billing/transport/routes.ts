@@ -8,7 +8,7 @@ import {
   googlePlayTransactionRequestSchema,
   iapEntitlementResponseSchema,
   iapMutationResponseSchema,
-} from '@web-app-demo/contracts'
+} from '@ai-fitness-coach/contracts'
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi'
 import type { Context } from 'hono'
 

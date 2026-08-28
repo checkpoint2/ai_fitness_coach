@@ -5,7 +5,7 @@ import {
   type SocialAuthProvider,
   type SocialAuthRequest,
   type UserDto,
-} from '@web-app-demo/contracts';
+} from '@ai-fitness-coach/contracts';
 import {
   createContext,
   type PropsWithChildren,

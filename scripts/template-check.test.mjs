@@ -89,12 +89,15 @@ describe('template checklist validation', () => {
   })
 
   test('rejects malformed install status and invalid or duplicate ledger rows', () => {
-    const malformedStatus = currentChecklist.replace('`not started`', '`almost ready`')
+    const malformedStatus = currentChecklist.replace(
+      /^\*\*Install status:\*\* `[^`]+`$/m,
+      '**Install status:** `almost ready`',
+    )
     expect(validateChecklist(malformedStatus, { agents: currentAgents, claude: currentClaude })).toContain(
       'CHECKLIST.md has invalid install status "almost ready".',
     )
 
-    const duplicateStatus = currentChecklist.replace(
+    const duplicateStatus = notStartedChecklist().replace(
       '**Install status:** `not started`',
       '**Install status:** `not started`\n**Install status:** `completed 2026-08-16`',
     )
@@ -188,17 +191,18 @@ describe('template checklist validation', () => {
   })
 
   test('keeps a reusable not-started intake pristine', () => {
-    const answered = currentChecklist.replace('| Project name / slug                                             | _unanswered_ |', '| Project name / slug                                             | demo         |')
+    const pristineChecklist = notStartedChecklist()
+    const answered = pristineChecklist.replace('| Project name / slug                                             | _unanswered_ |', '| Project name / slug                                             | demo         |')
     expect(validateChecklist(answered, { agents: currentAgents, claude: currentClaude })).toContain(
       'A reusable template with status "not started" must keep every intake answer `_unanswered_`.',
     )
 
-    const checked = currentChecklist.replace('- [ ] `backend` - API, database, auth', '- [x] `backend` - API, database, auth')
+    const checked = pristineChecklist.replace('- [ ] `backend` - API, database, auth', '- [x] `backend` - API, database, auth')
     expect(validateChecklist(checked, { agents: currentAgents, claude: currentClaude })).toContain(
       'A reusable template with status "not started" must keep every checklist item unchecked.',
     )
 
-    const malformedIntake = currentChecklist.replace(
+    const malformedIntake = pristineChecklist.replace(
       /^\| Project name \/ slug.*$/m,
       '| Project name / slug | answered | extra |',
     )
@@ -206,7 +210,7 @@ describe('template checklist validation', () => {
       'CHECKLIST.md section "Project identity" intake row "Project name / slug" must contain exactly two columns (found 3).',
     )
 
-    const missingSeparator = currentChecklist.replace(
+    const missingSeparator = pristineChecklist.replace(
       '| --------------------------------------------------------------- | ------------ |',
       '',
     )
@@ -214,7 +218,7 @@ describe('template checklist validation', () => {
       'CHECKLIST.md section "Project identity" must keep a two-column Markdown table separator.',
     )
 
-    const extraIntakeTable = currentChecklist.replace(
+    const extraIntakeTable = pristineChecklist.replace(
       '## 2. Product',
       '| Question | Answer |\n| --- | --- |\n| Shadow answer | answered |\n\n## 2. Product',
     )
@@ -222,7 +226,7 @@ describe('template checklist validation', () => {
       'CHECKLIST.md section "Project identity" must contain exactly one Question/Answer intake table (found 2).',
     )
 
-    const informationalTable = currentChecklist.replace(
+    const informationalTable = pristineChecklist.replace(
       '## 3. Active surfaces',
       '| Example | Meaning |\n| --- | --- |\n| MVP | First useful release |\n\n## 3. Active surfaces',
     )
@@ -230,7 +234,7 @@ describe('template checklist validation', () => {
       validateChecklist(informationalTable, { agents: currentAgents, claude: currentClaude }),
     ).toEqual([])
 
-    const escapedPipe = currentChecklist
+    const escapedPipe = pristineChecklist
       .replace('**Install status:** `not started`', '**Install status:** `in progress`')
       .replace(
         '| Project name / slug                                             | _unanswered_ |',
@@ -240,7 +244,7 @@ describe('template checklist validation', () => {
       validateChecklist(escapedPipe, { agents: currentAgents, claude: currentClaude }),
     ).toEqual([])
 
-    const extraHostingRow = currentChecklist.replace(
+    const extraHostingRow = pristineChecklist.replace(
       /^\| Own server\s+\|.*$/m,
       '$&\n| Shadow host | Never | Nothing |',
     )
@@ -248,7 +252,7 @@ describe('template checklist validation', () => {
       'CHECKLIST.md Deployment hosting comparison must contain exactly five rows (found 6).',
     )
 
-    const duplicateHostingHeader = currentChecklist.replace(
+    const duplicateHostingHeader = pristineChecklist.replace(
       /^(\| Hosting\s+\|.*\n\| -.*)$/m,
       '$1\n| Hosting | Chosen when | What the template gives you |',
     )
@@ -293,7 +297,9 @@ describe('template checklist validation', () => {
       'A completed install must mark at least one active surface.',
     )
 
-    expect(validateChecklist(completed, { agents: currentAgents, claude: currentClaude })).toContain(
+    const bootstrapAgents = withBootstrapMarker(currentAgents)
+    const bootstrapClaude = withBootstrapMarker(currentClaude)
+    expect(validateChecklist(completed, { agents: bootstrapAgents, claude: bootstrapClaude })).toContain(
       'A completed install must remove Bootstrap-Only Instructions from AGENTS.md and CLAUDE.md.',
     )
   })
@@ -309,8 +315,8 @@ describe('agent instruction equivalence', () => {
     ])
 
     const hiddenFilenameDrift = currentClaude.replace(
-      'from both `AGENTS.md` and `CLAUDE.md`',
-      'from both `CLAUDE.md` and `CLAUDE.md`',
+      'such as `AGENTS.md` aligned.',
+      'such as `CLAUDE.md` aligned.',
     )
     expect(validateAgentInstructions(currentAgents, hiddenFilenameDrift)).toEqual([
       'AGENTS.md and CLAUDE.md differ beyond their document titles and reciprocal filename references.',
@@ -439,12 +445,32 @@ describe('tracked Markdown links', () => {
 })
 
 function completedChecklist() {
-  const deploymentStart = currentChecklist.indexOf('## 8. Deployment')
-  const completed = `${currentChecklist.slice(0, deploymentStart).replaceAll('_unanswered_', 'n/a')}${currentChecklist.slice(deploymentStart)}`
+  const pristineChecklist = notStartedChecklist()
+  const deploymentStart = pristineChecklist.indexOf('## 8. Deployment')
+  const completed = `${pristineChecklist.slice(0, deploymentStart).replaceAll('_unanswered_', 'n/a')}${pristineChecklist.slice(deploymentStart)}`
 
   return completed
     .replace('**Install status:** `not started`', '**Install status:** `completed 2026-08-16`')
     .replace('- [ ] `website`', '- [x] `website`')
+}
+
+function notStartedChecklist() {
+  return currentChecklist
+    .replace(/^\*\*Install status:\*\* `[^`]+`$/m, '**Install status:** `not started`')
+    .replace(/^(\| (?!Question\s+\||-)[^|\n]+?\s*\|)\s*[^|\n]*\s*(\|)$/gm, '$1 _unanswered_ $2')
+    .replace(/^- \[[xX]\]/gm, '- [ ]')
+    .replace(
+      /^- \[ \] External integrations \(which:.*\)$/m,
+      '- [ ] External integrations (which: _unanswered_)',
+    )
+    .replace(
+      /^- \[ \] Validation scope recorded for this project:.*$/m,
+      '- [ ] Validation scope recorded for this project (which suites run before a change is called done): _unanswered_',
+    )
+}
+
+function withBootstrapMarker(source) {
+  return `${source}\n<!-- BOOTSTRAP_ONLY_START -->\n<!-- BOOTSTRAP_ONLY_END -->\n`
 }
 
 function withoutBootstrapBlock(source) {

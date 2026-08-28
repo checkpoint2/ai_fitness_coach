@@ -84,7 +84,7 @@ is never part of deployment.
 - Expo ImagePicker, ImageManipulator, and FileSystem (profile photo upload)
 - Expo Apple Authentication and React Native Google Sign-In for optional social auth
 - Expo IAP for App Store and Google Play subscription transport
-- Zod contracts from `@web-app-demo/contracts`
+- Zod contracts from `@ai-fitness-coach/contracts`
 - Native ShadCN-style UI primitives in `src/components/ui`
 - Maestro E2E smoke flow
 
@@ -202,7 +202,7 @@ a custom test port.
 docker compose version
 docker info
 docker compose --env-file backend/.env up -d postgres_test
-export TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:54330/web_app_demo_test?schema=public"
+export TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:54330/ai_fitness_coach_test?schema=public"
 export LAN_IP=<your-machine-lan-ip>
 export BACKEND_PORT=3000
 export METRO_PORT=8081
@@ -231,7 +231,7 @@ Run the local policy audit after changing Maestro flows or runner inputs:
 bun run e2e:maestro:audit
 ```
 
-Before running the flow, the backend must be reachable at the `EXPO_PUBLIC_API_URL` used when Metro serves the mobile bundle, and Metro must be reachable at `MAESTRO_DEV_SERVER_URL`. The runner opens `exp+mobile://expo-development-client/?url=<metro-url>` after state reset and after app relaunch so Maestro lands in the app bundle instead of the Expo launcher or simulator home screen. If you rename the Expo slug, set `MAESTRO_DEV_CLIENT_SCHEME=exp+<slug>`.
+Before running the flow, the backend must be reachable at the `EXPO_PUBLIC_API_URL` used when Metro serves the mobile bundle, and Metro must be reachable at `MAESTRO_DEV_SERVER_URL`. The runner opens `exp+ai-fitness-coach://expo-development-client/?url=<metro-url>` after state reset and after app relaunch so Maestro lands in the app bundle instead of the Expo launcher or simulator home screen. If you rename the Expo slug, set `MAESTRO_DEV_CLIENT_SCHEME=exp+<slug>`.
 
 Stable selectors live in `src/constants/testIds.ts`, the flow is `.maestro/flows/auth-smoke.yaml`, and the runner is `scripts/e2e/run-maestro.mjs`. Detailed runbook: [../docs/TESTING.md](../docs/TESTING.md).
 

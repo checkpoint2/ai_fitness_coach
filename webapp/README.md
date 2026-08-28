@@ -4,7 +4,7 @@ The CSR browser client provides authenticated, role-specific workspaces. It need
 
 ## Project Surface Status
 
-This section may be updated during first-run bootstrap. Once [CHECKLIST.md](../CHECKLIST.md) reports an install in progress or completed and its _Active surfaces_ section leaves webapp unmarked, add a short note here explaining that browser work is intentionally paused. When the user activates webapp, mark it there, then remove or rewrite that note before starting browser development.
+Deferred for the first AI Fitness Coach pilot. Keep this workspace intact, but do not add browser product features, configure its runtime, or add Playwright flows until `webapp` is explicitly activated in [CHECKLIST.md](../CHECKLIST.md).
 
 ## Stack
 
@@ -17,7 +17,7 @@ This section may be updated during first-run bootstrap. Once [CHECKLIST.md](../C
 - TanStack Query
 - TanStack Form
 - TanStack Router
-- Zod contracts from `@web-app-demo/contracts`
+- Zod contracts from `@ai-fitness-coach/contracts`
 - shadcn CLI
 - Playwright
 - ESLint
@@ -126,7 +126,7 @@ error-recovery and empty states, self-demotion protection, admin promotion,
 target-session revocation, and the existing concurrent-tab session behavior.
 
 The run starts Docker Compose `postgres_test`, applies migrations to
-`web_app_demo_test`, idempotently seeds the E2E administrator, starts the backend
+`ai_fitness_coach_test`, idempotently seeds the E2E administrator, starts the backend
 with `TEST_DATABASE_URL` as its `DATABASE_URL`, starts Vite, and removes the test
 database volume after the run by default.
 

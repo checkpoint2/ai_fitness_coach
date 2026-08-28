@@ -1,4 +1,4 @@
-import type { SubscriptionSnapshot } from '@web-app-demo/contracts';
+import type { SubscriptionSnapshot } from '@ai-fitness-coach/contracts';
 import { expect, mock, beforeEach, test } from 'bun:test';
 import React, { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';

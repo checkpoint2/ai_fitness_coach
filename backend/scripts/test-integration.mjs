@@ -78,7 +78,7 @@ export async function runBackendIntegration({
           '-U',
           'superuser',
           '-d',
-          'web_app_demo_test',
+          'ai_fitness_coach_test',
         ],
         {
           cwd: repositoryRoot,

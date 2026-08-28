@@ -5,7 +5,7 @@ export type BrowserSessionEvent = {
   state: BrowserSessionState
 }
 
-const sessionEventStorageKey = 'web_app_demo:auth-session-event'
+const sessionEventStorageKey = 'ai_fitness_coach:auth-session-event'
 let currentSessionEvent: BrowserSessionEvent = {
   epoch: 'initial',
   state: 'cleared',

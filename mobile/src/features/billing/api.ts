@@ -13,7 +13,7 @@ import {
   type GooglePlayTransactionRequest,
   type IapEntitlementResponse,
   type IapMutationResponse,
-} from '@web-app-demo/contracts';
+} from '@ai-fitness-coach/contracts';
 
 import type { ApiTransport } from '@/platform/api';
 

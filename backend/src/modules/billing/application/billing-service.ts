@@ -1,4 +1,4 @@
-import type { SubscriptionSnapshot } from '@web-app-demo/contracts'
+import type { SubscriptionSnapshot } from '@ai-fitness-coach/contracts'
 
 import type {
   AppStoreStatusItem,

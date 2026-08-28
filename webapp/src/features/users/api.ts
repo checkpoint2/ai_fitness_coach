@@ -2,7 +2,7 @@ import {
   updateProfileRequestSchema,
   updateProfileResponseSchema,
   type UpdateProfileRequest,
-} from '@web-app-demo/contracts'
+} from '@ai-fitness-coach/contracts'
 
 import type { AuthenticatedTransport } from '@/platform/api'
 

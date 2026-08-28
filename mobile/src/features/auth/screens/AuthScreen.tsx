@@ -4,7 +4,7 @@ import {
   registerRequestSchema,
   type LoginRequest,
   type RegisterRequest,
-} from '@web-app-demo/contracts';
+} from '@ai-fitness-coach/contracts';
 import { Redirect, type Href } from 'expo-router';
 import { useState } from 'react';
 
@@ -106,9 +106,9 @@ export function AuthScreen() {
     <ScreenShell
       centered
       description="Sign in with your email and password."
-      eyebrow="Golden path template"
+      eyebrow="AI Fitness Coach"
       keyboardAware
-      title="Welcome to your workspace.">
+      title="Welcome to AI Fitness Coach.">
 
       <AuthPanel
         description={

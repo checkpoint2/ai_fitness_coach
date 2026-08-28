@@ -1,4 +1,4 @@
-import type { UploadTicket } from '@web-app-demo/contracts';
+import type { UploadTicket } from '@ai-fitness-coach/contracts';
 
 /**
  * The direct-to-storage transfer protocol.

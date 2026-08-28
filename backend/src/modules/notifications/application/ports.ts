@@ -1,7 +1,7 @@
 import type {
   RegisterPushTokenRequest,
   UnregisterPushTokenRequest,
-} from '@web-app-demo/contracts'
+} from '@ai-fitness-coach/contracts'
 
 export type EnqueuePushNotificationInput = {
   body: string

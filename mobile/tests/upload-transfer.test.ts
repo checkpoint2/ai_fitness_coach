@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import type { UploadTicket } from '@web-app-demo/contracts';
+import type { UploadTicket } from '@ai-fitness-coach/contracts';
 
 import {
   sendUploadTicket,

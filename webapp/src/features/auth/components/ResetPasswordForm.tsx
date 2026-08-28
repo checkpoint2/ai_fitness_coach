@@ -1,6 +1,6 @@
 import { useForm } from '@tanstack/react-form'
 import { Link } from '@tanstack/react-router'
-import { passwordResetConfirmRequestSchema } from '@web-app-demo/contracts'
+import { passwordResetConfirmRequestSchema } from '@ai-fitness-coach/contracts'
 import { useId, useState } from 'react'
 
 import { Typography } from '@/components/typography'

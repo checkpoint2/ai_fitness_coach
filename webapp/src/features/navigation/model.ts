@@ -1,4 +1,4 @@
-import type { UserRole } from '@web-app-demo/contracts'
+import type { UserRole } from '@ai-fitness-coach/contracts'
 
 export type UserRoutePath = '/app' | '/app/profile' | '/app/settings'
 export type AdminRoutePath = '/admin' | '/admin/users' | '/admin/settings'

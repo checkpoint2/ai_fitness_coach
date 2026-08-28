@@ -40,7 +40,7 @@ export function PaywallScreen() {
     return (
       <ScreenShell
         centered
-        description="This screen is the template's subscription flow, kept ready but switched off."
+        description="The future subscription flow is prepared but switched off for the free pilot."
         eyebrow="Premium"
         testID={TEST_IDS.paywall.screen}
         title="Subscriptions are not enabled.">

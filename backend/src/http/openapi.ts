@@ -1,4 +1,4 @@
-import { apiErrorSchema } from '@web-app-demo/contracts'
+import { apiErrorSchema } from '@ai-fitness-coach/contracts'
 
 const errorResponseContent = {
   'application/json': {

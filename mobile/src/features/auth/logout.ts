@@ -1,4 +1,4 @@
-import type { TokenLogoutRequest } from '@web-app-demo/contracts';
+import type { TokenLogoutRequest } from '@ai-fitness-coach/contracts';
 
 import type { AuthApiPort } from './api';
 
