@@ -19,6 +19,34 @@ directory, and heading links. Terraform remains an explicit optional signal thro
 
 Client E2E should cover valuable user journeys, including non-happy-path states that protect real product behavior, when they can stay stable. Important edge cases must be covered at some automated level; choosing integration, contract, or unit coverage instead of E2E is not permission to skip them. Negative validation matrices, combinatorial edge cases, concurrency, and pure rules belong in unit/integration tests.
 
+## Future AI, Memory, And Hybrid-Onboarding Coverage
+
+These capabilities are still `absent`; this section defines the mandatory coverage when they are
+implemented and does not add runnable tests today.
+
+- Backend integration must prove that memory is isolated between users, a forged or model-supplied
+  user id cannot select another account, and deleting an account removes its memory and derived AI
+  data from active paths.
+- Persistence coverage must restore relevant context after a new chat, login, app restart, and session
+  refresh without asking again for confirmed information.
+- Correction coverage must show that edited, deleted, conflicting, historical, and possibly outdated
+  facts change later context, summaries, recommendations, and caches.
+- AI truthfulness coverage must verify missing data is not invented, estimates do not become facts,
+  conflicting evidence is surfaced, insufficient data lowers confidence, and fact/estimate/
+  inference/hypothesis states remain distinct.
+- Provider-failure coverage must preserve user input, avoid false “saved” states, offer a useful retry,
+  and keep a complete manual path when AI or speech recognition is unavailable.
+- Hybrid-onboarding coverage must prove structured fields, free text, and voice can produce compatible
+  editable drafts; recognized text is shown and confirmable before important values are saved; denying
+  microphone permission still allows completion; and original audio is not retained after recognition.
+- Significant goals, plans, and recommendations must remain proposed until confirmed, and a failed
+  backend write must never be reported as saved.
+
+Use integration tests for auth, persistence, isolation, deletion, and provider boundaries; contract or
+unit tests for extraction and epistemic-state matrices; and Maestro only for the highest-value mobile
+journeys that can remain deterministic. Follow [`AI_COACH.md`](AI_COACH.md) and
+[`EVIDENCE.md`](EVIDENCE.md) when defining expected behavior.
+
 ## Choosing Test Level
 
 Default to the highest useful behavioral boundary:

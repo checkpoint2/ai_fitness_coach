@@ -112,6 +112,39 @@ mutations enter the short global role-policy section only after both target
 fences, so time queued behind another target's send cannot consume their own
 send-fence budget. They then revoke every session and push token atomically.
 
+## Planned AI Coach And Persistent Memory
+
+The AI fitness domain, hybrid onboarding, persistent memory, coach, and provider integrations are
+required for the pilot but are currently `absent` in the capability ledger. The boundaries below are
+an implementation constraint, not a claim that modules, schemas, routes, or adapters already exist.
+
+- PostgreSQL remains the source of truth for profile data, goals, preferences, confirmed facts,
+  historical plan versions, nutrition, workouts, measurements, provenance, and corrections.
+- A backend context builder selects the smallest useful data set for the current operation. It scopes
+  every read to the principal resolved from the authenticated session; a model-supplied or
+  client-supplied `userId` never selects memory.
+- Models receive bounded structured context through an application use case. They receive neither a
+  database connection nor an arbitrary SQL tool, and cannot directly read or mutate product tables.
+- Confirmed facts, estimates, interpretations, and hypotheses remain distinguishable through storage,
+  context assembly, AI output, and user correction. A significant write or plan change is committed
+  only after explicit user confirmation.
+- User deletion and correction must invalidate derived context, summaries, pending work, and caches so
+  removed or superseded data cannot return in a later answer.
+- LLM, speech-recognition, food-vision, body-photo-analysis, and any future TTS integrations sit behind
+  narrow provider ports owned by backend application boundaries. Provider SDKs do not enter domain or
+  transport code.
+- Different accounts never share retrieved records, prompt context, provider requests, or cached
+  results. Cross-user isolation is enforced and tested at the backend boundary rather than delegated
+  to the model.
+- No provider is selected yet. A later provider decision must satisfy Russian pilot processing,
+  no-training terms, deletion, logging, consent, and data-residency requirements recorded in
+  `CHECKLIST.md`; manual input remains available when AI or speech recognition is unavailable.
+
+Evidence-dependent rules are accessed as a bounded, versioned input to analysis rather than copied
+into every prompt or inferred from model intuition. [`EVIDENCE.md`](EVIDENCE.md) defines rule status;
+only reviewed active rules may be treated as established constraints. Preliminary pilot settings must
+remain visibly provisional until reviewed.
+
 ## Frontend
 
 There are two browser surfaces, split by whether the pages need SEO. `website` (Astro, SSG by default, SSR/hybrid only when needed) owns public, search-indexable, and link-previewed pages: landing, marketing, content, and the public catalog of a storefront or marketplace. `webapp` (React CSR) owns screens that live behind sign-in and need no SEO: buyer account, seller/admin panels, checkout/account workflows, dashboards, settings, and authenticated tools. A marketplace normally uses both surfaces, sharing `@ai-fitness-coach/contracts`. The native mobile app is a third client that consumes the same contracts. The decision rule the installing agent should apply is in the root [README.md](../README.md) under "Choosing `webapp` vs `website`"; the mandatory data/cart/payment ownership contract is [WEB_SURFACES.md](WEB_SURFACES.md).

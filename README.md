@@ -4,7 +4,7 @@
   <img src="docs/assets/vibe_tmpl_schema.png" alt="AI Fitness Coach architecture schema" width="100%">
 </p>
 
-AI Fitness Coach is a mobile-first personal assistant for training and nutrition. This repository keeps a Bun/Hono backend, an Expo app, shared API contracts, and deferred browser surfaces in one codebase. The first pilot actively develops `backend` and `mobile`; IAP, push, social sign-in, `webapp`, and `website` remain switched off until separately activated in `CHECKLIST.md`.
+AI Fitness Coach is a mobile-first personal AI coach for training, nutrition, and body transformation. It supports fat loss, muscle gain, recomposition, and maintenance for men and women. This repository keeps a Bun/Hono backend, an Expo app, shared API contracts, and deferred browser surfaces in one codebase. The first pilot actively develops `backend` and `mobile`; IAP, push, social sign-in, `webapp`, and `website` remain switched off until separately activated in `CHECKLIST.md`.
 
 ## Agent Intake Checklist Before Installing
 
@@ -88,6 +88,9 @@ and report exact remaining account/domain authorizations without printing secret
 - `docs/TESTING.md` - the backend, Playwright, and mobile Maestro testing contract.
 - `docs/LOCAL_DATABASE.md` - cross-platform local PostgreSQL setup for Windows, macOS, and Linux.
 - `docs/MOBILE_PILOT_UX.md` - the approved mobile pilot navigation, screen logic, states, and user flows.
+- `docs/AI_COACH.md` - AI coach behavior, memory use, uncertainty, confirmation, and safety boundaries.
+- `docs/EVIDENCE.md` - evidence policy and the review status of fitness rules and pilot settings.
+- `docs/DECISIONS.md` - compact register of significant approved and open product decisions.
 - `docs/EMAIL.md` - transactional email: the four drivers, Postbox and Resend, and how delivery reaches the outbox.
 - `docs/STORAGE.md` - private file storage: the filesystem and S3 drivers, the local S3 container, and the upload contract.
 - `docs/WEB_SURFACES.md` - the mandatory ownership contract for SSG product data, rebuilds, browser cart/checkout, and separate mobile payment paths.
@@ -334,7 +337,7 @@ The backend API flow is `route -> validation -> auth/session guard -> service ->
 
 Keep the default architecture monolithic. For DigitalOcean production, the backend/API default is one `apps-s-1vcpu-1gb` App Platform container so a new project starts inside the expected low-cost budget with Managed PostgreSQL while retaining a clear scale-up path. Add backend worker or scheduled-job components from the same Docker image only when a concrete background job exists; the scheduler ships with the outbox drain and is deployable as-is. For real-time features, a single backend instance can own its local WebSocket connections. If the backend is horizontally scaled and users connected to different instances must receive the same chat, presence, or live events, add a managed Redis-compatible Pub/Sub broker between instances, using DigitalOcean Managed Valkey or Yandex Managed Service for Valkey, whichever hosting the checklist records.
 
-Ongoing engineering guidance lives in [AGENTS.md](AGENTS.md), [CLAUDE.md](CLAUDE.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/TESTING.md](docs/TESTING.md), and [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). First-run download and product setup instructions live in this README.
+Ongoing engineering guidance lives in [AGENTS.md](AGENTS.md), [CLAUDE.md](CLAUDE.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/TESTING.md](docs/TESTING.md), and [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). Product AI behavior, evidence policy, and durable owner decisions live in [docs/AI_COACH.md](docs/AI_COACH.md), [docs/EVIDENCE.md](docs/EVIDENCE.md), and [docs/DECISIONS.md](docs/DECISIONS.md). First-run download and product setup instructions live in this README.
 
 ## Current Upstream Documentation
 

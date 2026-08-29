@@ -21,7 +21,7 @@ Answer cells hold `_unanswered_` until the question is asked, and `n/a` when the
 | --------------------------------------------------------------- | ------------ |
 | New project from this template, or work on the template itself? | Новый самостоятельный продукт AI Fitness Coach. Это не доработка исходного шаблона и не PR его автору. |
 | Project name / slug                                             | AI Fitness Coach / `ai_fitness_coach`. Для локальной разработки используется временный mobile ID `com.example.aifitnesscoach`; постоянные Apple/Google ID и владелец Expo будут назначены на этапе подготовки сборок. |
-| Your own GitHub repository URL, if you have one                 | https://github.com/checkpoint2/ai_fitness_coach. Подключён как локальный `origin`; commit и push ещё не выполнялись. |
+| Your own GitHub repository URL, if you have one                 | https://github.com/checkpoint2/ai_fitness_coach. Подключён как локальный `origin`; ветка `mobile` опубликована и отслеживает `origin/mobile`. |
 
 If no GitHub destination is chosen, the repository is left without `origin` and publishing stays unconfigured. The template remote is detached during setup unless this checkout is explicitly for improving the template.
 
@@ -29,8 +29,8 @@ If no GitHub destination is chosen, the repository is left without `origin` and 
 
 | Question                                                  | Answer       |
 | --------------------------------------------------------- | ------------ |
-| What product do you want to build first?                  | Мобильный персональный AI-помощник по тренировкам и питанию для похудения, набора, рекомпозиции и поддержания формы. Он помогает выбрать цель, подтверждает план с пользователем, сопровождает день живым дружеским языком, принимает записи текстом, фото и голосом, хранит постоянную память и анализирует прогресс. Первый закрытый пилот бесплатный, рассчитан на iOS и Android и не является медицинской услугой. |
-| What is the first user journey that must work end to end? | Аккаунт → стартовая анкета → цель и подтверждённый план → экран «Сегодня» с информационной плашкой энергетического баланса, планом и следующими действиями → запись питания и тренировки → сохранение и исправление истории после нового входа/перезапуска → недельный разбор при достаточных данных. Ручной ввод и постоянная память реализуются первыми; голос, фото еды и добровольный AI-анализ фото тела входят в тот же первый пилот. |
+| What product do you want to build first?                  | Мобильный персональный AI-тренер по тренировкам, питанию и трансформации тела для мужчин и женщин. Он поддерживает снижение веса/жира, набор мышечной массы, рекомпозицию и поддержание формы, подтверждает план с пользователем, сопровождает день живым дружеским языком, принимает записи текстом, фото и голосом, хранит постоянную память и анализирует прогресс. Первый закрытый пилот бесплатный, рассчитан на iOS и Android и не является медицинской услугой. |
+| What is the first user journey that must work end to end? | Аккаунт → гибридный onboarding со структурированными полями, свободным текстом или голосом → редактируемый AI-черновик и подтверждение важных значений → цель и подтверждённый план → экран «Сегодня» с информационной плашкой энергетического баланса, планом и следующими действиями → запись питания и тренировки → сохранение и исправление истории после нового входа/перезапуска → недельный разбор при достаточных данных. Полноценный ручной путь и постоянная память реализуются первыми; голос, фото еды и добровольный AI-анализ фото тела входят в тот же первый пилот. |
 
 ## 3. Active surfaces
 
@@ -190,6 +190,7 @@ A capability with no row is `absent` by default. Add the row instead of assuming
 | Background jobs                 | included | Jobs live in `backend/src/jobs.ts`. The mobile schedule runs task-outbox and push processing every minute, upload cleanup hourly, and combined auth/notification maintenance every 15 minutes. Terraform deploys that scheduler as a DigitalOcean worker and the same executor in Yandex HTTP job containers/timer triggers; own servers run it under a supervisor. `workerLoops` stays empty. See `docs/BACKGROUND_JOBS.md`. |
 | Durable task outbox             | included | `task_outbox` in PostgreSQL with handlers in `backend/src/outbox/handlers.ts`, drained by `outbox:drain`. Ships with the password-reset emails as its only producers, and stays empty until something enqueues. Adding a task type is a code change, never a migration.                                                                                                                                              |
 | AI fitness domain               | absent   | Требуется для первого пилота; питание, тренировки, цели, планы и прогресс ещё не реализованы.                                                                                                                                                                                                                                                                                                                         |
+| Hybrid onboarding               | absent   | Обязателен в первом пилоте: структурированные поля, свободный текст и голос создают редактируемый черновик; важные значения подтверждаются до записи backend, а ручной путь работает без микрофона и AI. Реализация ещё не начата.                                                                                                                                                                                       |
 | Persistent user memory          | absent   | Обязательна в первом пилоте. PostgreSQL хранит профиль, цели, предпочтения, версии планов, питание, тренировки и замеры с датой, происхождением и отделением подтверждённых фактов от AI-оценок. Реализация ещё не начата.                                                                                                                                                                                                |
 | Today dashboard                 | absent   | Обязателен в первом пилоте. Энергетический баланс — информационная плашка сверху; основное содержание — план, живое обращение тренера и следующие действия на день.                                                                                                                                                                                                                                                     |
 | AI coach and contextual advice  | absent   | Обязательны отдельный чат «Тренер», короткие советы на основных экранах и контекстные подсказки. Значимые данные сохраняются только после подтверждения и успешной записи backend.                                                                                                                                                                                                                                     |
@@ -234,6 +235,12 @@ training, measurements, persistent memory, weekly review, AI coach chat, voice i
 estimation, and voluntary AI body-photo analysis on both iOS and Android. Build the reliable manual
 path and persistent memory first, then add voice and image-assisted input without removing them from
 the first-pilot scope.
+
+Onboarding is hybrid and progressive. Structured fields, free text, and voice are equal pilot inputs:
+natural input becomes an AI-extracted structured draft, the user can edit it, the product asks only
+for materially missing data, and important values are confirmed before the backend saves them. A
+complete manual path remains available when the microphone is refused or AI is unavailable. Original
+audio is not retained. Continuous real-time voice and cloud TTS remain deferred.
 
 The first-launch body-goal choices explicitly include weight/fat loss, maintaining form, muscle gain,
 and body recomposition. Recomposition is a separate goal: do not silently map it to maintenance or
@@ -282,6 +289,10 @@ to a concrete next action.
 
 ### AI interaction and persistent memory
 
+AI behavior, evidence-dependent rules, and durable owner decisions are defined without duplication in
+[`docs/AI_COACH.md`](docs/AI_COACH.md), [`docs/EVIDENCE.md`](docs/EVIDENCE.md), and
+[`docs/DECISIONS.md`](docs/DECISIONS.md).
+
 Use a hybrid AI experience: short advice on primary screens, a dedicated full chat named `Тренер`,
 and contextual help inside nutrition, training, and progress. A new chat, login, or app restart does
 not erase what the application has already saved.
@@ -314,6 +325,11 @@ real-time voice conversation remain roadmap items.
 
 Voice processing follows the same Russia residency, no-training, deletion, session scoping, and
 confirmation rules as text and images.
+
+The LLM, speech recognition, photo analysis, food vision, and cloud TTS providers are open technical
+decisions. No provider is implied by the template. Pilot processing must preserve Russian data
+residency, cross-user isolation, provider no-training terms, deletion requirements, authenticated
+backend scoping, and the manual fallback described above.
 
 ### Photos, privacy, and deletion
 
