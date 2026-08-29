@@ -87,6 +87,7 @@ and report exact remaining account/domain authorizations without printing secret
 - `docs/BACKGROUND_JOBS.md` - the three ways to work off the request path, the durable task outbox, and how to run them.
 - `docs/TESTING.md` - the backend, Playwright, and mobile Maestro testing contract.
 - `docs/LOCAL_DATABASE.md` - cross-platform local PostgreSQL setup for Windows, macOS, and Linux.
+- `docs/MOBILE_PILOT_UX.md` - the approved mobile pilot navigation, screen logic, states, and user flows.
 - `docs/EMAIL.md` - transactional email: the four drivers, Postbox and Resend, and how delivery reaches the outbox.
 - `docs/STORAGE.md` - private file storage: the filesystem and S3 drivers, the local S3 container, and the upload contract.
 - `docs/WEB_SURFACES.md` - the mandatory ownership contract for SSG product data, rebuilds, browser cart/checkout, and separate mobile payment paths.

@@ -235,26 +235,44 @@ estimation, and voluntary AI body-photo analysis on both iOS and Android. Build 
 path and persistent memory first, then add voice and image-assisted input without removing them from
 the first-pilot scope.
 
+The first-launch body-goal choices explicitly include weight/fat loss, maintaining form, muscle gain,
+and body recomposition. Recomposition is a separate goal: do not silently map it to maintenance or
+force a fixed calorie deficit. Its plan combines strength training, an appropriate nutrition target,
+and progress assessment across weight trend, measurements, strength results, and optional comparable
+photos. The product explains the proposed starting strategy and applies it only after the user confirms
+the plan.
+
 The pilot is free. Keep the existing native subscription implementation switched off and design
 product modules against one server-owned access policy rather than Apple/Google SDK state. Turning on
 payments later must not require rewriting nutrition, training, progress, or memory modules.
 
 ### Today dashboard and coach voice
 
+The approved mobile screen hierarchy, navigation, states, and user flows are specified in
+[`docs/MOBILE_PILOT_UX.md`](docs/MOBILE_PILOT_UX.md). It is a product contract, not evidence that the
+capabilities marked `absent` below have been implemented.
+
 The Today screen helps the user understand what to do today. Its energy balance is an informational
 card at the top, not the whole screen. The main content is the current plan, the next useful action,
 training or recovery status, nutrition actions, reminders, progress context, and access to the AI
 coach.
 
-The energy card shows recorded intake, the selected daily target, remaining calories, and a separate
-estimate of total daily expenditure:
+The energy card shows recorded intake, approximate expenditure, current energy balance, the selected
+daily target, remaining calories or overage, and a preliminary day status:
 
+`Current energy balance = recorded intake - approximate expenditure`
 `Remaining = confirmed daily target - recorded intake`
 
 Expenditure never replaces the target, and exercise calories are not automatically added back into
 the target. Missing food records mean incomplete data, not zero intake. Negative remaining calories
 are shown as an overage rather than clamped to zero. Day boundaries follow the user's timezone and
 the value is recalculated after edits or deletions.
+
+The card is an explicit shortcut to the energy calendar in `Progress`: its whole surface is tappable
+and it includes a visible calendar/history label. The calendar is also permanently discoverable at
+the top of the `Progress` tab. Opening the card selects today; selecting a past day explains its
+color from the nutrition, activity, completeness, uncertainty, and plan version recorded for that
+date. Current-day color is preliminary until nutrition and activity are confirmed complete.
 
 The product speaks to the user as a supportive, confident friend: informal Russian `ты`, light humor,
 no crude or artificial slang, shame, pressure, or invented achievements. Messages vary by context
