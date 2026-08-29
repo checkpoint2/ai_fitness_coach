@@ -10,7 +10,9 @@
 и хранения данных первого запуска. Общий путь экранов остаётся в
 [`MOBILE_PILOT_UX.md`](MOBILE_PILOT_UX.md), поведение AI — в [`AI_COACH.md`](AI_COACH.md), статус
 физиологических и safety-правил — в [`EVIDENCE.md`](EVIDENCE.md), технические границы — в
-[`ARCHITECTURE.md`](ARCHITECTURE.md). Наличие спецификации не меняет состояния `absent` в
+[`ARCHITECTURE.md`](ARCHITECTURE.md), а реализационный проект — в
+[`ONBOARDING_TECHNICAL_DESIGN.md`](ONBOARDING_TECHNICAL_DESIGN.md). Наличие спецификации не меняет
+состояния `absent` в
 [`CHECKLIST.md`](../CHECKLIST.md).
 
 ## 1. Результат onboarding

@@ -31,6 +31,14 @@ model User {
   pushDeliveries          PushDelivery[]
   passwordResetTokens PasswordResetToken[]
   avatars             UserAvatar[]
+  onboardingRun       OnboardingRun?
+  onboardingFacts     UserFact[]
+  fitnessGoals        FitnessGoal[]
+  bodyMeasurements    BodyMeasurement[]
+  safetyFlags         SafetyFlag[]
+  fitnessPlans        FitnessPlan[]
+  coachNotes          CoachNote[]
+  onboardingMutationReceipts OnboardingMutationReceipt[]
 
   @@index([role], map: "users_role_idx")
   @@map("users")

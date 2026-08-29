@@ -115,10 +115,16 @@ send-fence budget. They then revoke every session and push token atomically.
 ## Planned AI Coach And Persistent Memory
 
 The AI fitness domain, hybrid onboarding, persistent memory, coach, and provider integrations are
-required for the pilot but are currently `absent` in the capability ledger. The boundaries below are
-an implementation constraint, not a claim that modules, schemas, routes, or adapters already exist.
+required for the pilot but are currently `absent` in the capability ledger. Shared contracts, pure
+workflow rules, PostgreSQL persistence, authenticated manual onboarding routes, and a purpose-bounded
+plan context builder now exist. No mobile journey, evidence-approved plan content, AI extraction,
+speech path, coach chat, or provider adapter exists.
 The approved product contract for onboarding fields, states, extraction, confirmation, resumption,
 and draft retention is [`ONBOARDING.md`](ONBOARDING.md); this architecture section does not redefine it.
+The proposed data model, backend contracts, concurrency rules, implementation sequence, and test
+matrix are in [`ONBOARDING_TECHNICAL_DESIGN.md`](ONBOARDING_TECHNICAL_DESIGN.md). Its first three stages
+exist: contracts/rules, a user-owned Prisma repository foundation, and the authenticated manual
+backend flow. Mobile clients, evidence-approved plan generation, and providers do not.
 
 - PostgreSQL remains the source of truth for profile data, goals, preferences, confirmed facts,
   historical plan versions, nutrition, workouts, measurements, provenance, and corrections.

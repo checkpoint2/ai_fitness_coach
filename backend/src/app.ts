@@ -16,6 +16,7 @@ import { createAuthModule, type AuthHttpEnv } from './modules/auth'
 //   type GooglePlaySubscriptionVerifier,
 // } from './modules/billing'
 import { createNotificationsModule } from './modules/notifications'
+import { createOnboardingModule } from './modules/onboarding'
 import { createUploadsModule } from './modules/uploads'
 import { createUsersModule } from './modules/users'
 import {
@@ -86,6 +87,10 @@ export function createApp({
     requireAuth: auth.requireAuth,
     storage: storage.storage,
   })
+  const onboarding = createOnboardingModule({
+    db: prisma,
+    requireAuth: auth.requireAuth,
+  })
   const app = new OpenAPIHono<AuthHttpEnv>({ defaultHook: validationErrorHook })
   app.openAPIRegistry.registerComponent('securitySchemes', 'BearerAuth', {
     type: 'http',
@@ -128,6 +133,7 @@ export function createApp({
     app.use('/api/users/*', middleware)
     app.use('/api/admin/*', middleware)
     app.use('/api/uploads/*', middleware)
+    app.use('/api/onboarding/*', middleware)
   }
   // Ingress budget for the subscription routes, uncomment together with them:
   // for (const middleware of createIngressSecurity({
@@ -182,6 +188,7 @@ export function createApp({
   // app.route('/api/iap', billing.createRoutes(auth.authenticateAccessToken))
   app.route('/api/notifications', notifications.createRoutes(auth.authenticateAccessToken))
   app.route('/api/uploads', uploads.routes)
+  app.route('/api/onboarding', onboarding.routes)
   // app.route('/api/webhooks', billing.webhookRoutes)
 
   // Only the filesystem driver needs the backend to serve the URLs it signs. With an S3 driver

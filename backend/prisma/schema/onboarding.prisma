@@ -1,0 +1,297 @@
+/// Resumable onboarding workflow. The structured draft is temporary: profile confirmation clears
+/// it together with the source narrative. Raw audio has no column and therefore cannot be stored.
+model OnboardingRun {
+  id                   String                            @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId               String                            @unique(map: "onboarding_runs_user_id_key") @map("user_id") @db.Uuid
+  status               OnboardingRunStatus               @default(NOT_STARTED)
+  resumeStatus         OnboardingRunStatus?              @map("resume_status")
+  initialEntryMode     OnboardingRunEntryMode?           @map("initial_entry_mode")
+  draftSchemaVersion   Int                               @default(1) @map("draft_schema_version")
+  draftPayload         Json                              @map("draft_payload")
+  sourceNarrative      String?                           @map("source_narrative") @db.Text
+  sourceKind           OnboardingRunSourceKind           @default(NONE) @map("source_kind")
+  retentionChoice      OnboardingNarrativeRetention      @default(UNDECIDED) @map("retention_choice")
+  revision             Int                               @default(0)
+  profileConfirmedAt   DateTime?                         @map("profile_confirmed_at")
+  planConfirmedAt      DateTime?                         @map("plan_confirmed_at")
+  completedAt          DateTime?                         @map("completed_at")
+  createdAt            DateTime                          @default(now()) @map("created_at")
+  updatedAt            DateTime                          @updatedAt @map("updated_at")
+  user                 User                              @relation(fields: [userId], references: [id], onDelete: Cascade, map: "onboarding_runs_user_id_fkey")
+
+  @@index([status, updatedAt], map: "onboarding_runs_status_updated_at_idx")
+  @@map("onboarding_runs")
+}
+
+/// Versioned confirmed memory. `activeKey` is set only on the current version, making the
+/// user-and-key unique constraint enforce one current fact without handwritten partial indexes.
+model UserFact {
+  id              String                   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId          String                   @map("user_id") @db.Uuid
+  factKey         String                   @map("fact_key")
+  activeKey       String?                  @map("active_key")
+  value           Json
+  truthKind       PersistentTruthKind      @map("truth_kind")
+  state           UserFactState            @default(confirmed)
+  sourceKind      PersistentSourceKind     @map("source_kind")
+  sourceRef       String?                  @map("source_ref") @db.Uuid
+  isApproximate   Boolean                  @default(false) @map("is_approximate")
+  observedAt      DateTime?                @map("observed_at")
+  recordedAt      DateTime                 @default(now()) @map("recorded_at")
+  confirmedAt     DateTime                 @map("confirmed_at")
+  validFrom       DateTime                 @default(now()) @map("valid_from")
+  supersededAt    DateTime?                @map("superseded_at")
+  supersedesId    String?                  @map("supersedes_id") @db.Uuid
+  user            User                     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "user_facts_user_id_fkey")
+  supersedes      UserFact?                @relation("UserFactSupersession", fields: [supersedesId], references: [id], onDelete: SetNull, map: "user_facts_supersedes_id_fkey")
+  supersededBy    UserFact[]               @relation("UserFactSupersession")
+
+  @@unique([userId, activeKey], map: "user_facts_user_id_active_key_key")
+  @@index([userId, factKey, recordedAt], map: "user_facts_user_id_fact_key_recorded_at_idx")
+  @@map("user_facts")
+}
+
+model FitnessGoal {
+  id                    String               @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId                String               @map("user_id") @db.Uuid
+  version               Int
+  state                 FitnessRecordState
+  activeKey             String?              @map("active_key")
+  bodyGoal              FitnessBodyGoal      @map("body_goal")
+  trainingGoal          FitnessTrainingGoal  @map("training_goal")
+  primaryPriority       String?              @map("primary_priority") @db.Text
+  desiredWeightKg       Decimal?             @map("desired_weight_kg") @db.Decimal(6, 2)
+  resultStatement       String?              @map("result_statement") @db.Text
+  confirmedAt           DateTime?            @map("confirmed_at")
+  supersededAt          DateTime?            @map("superseded_at")
+  createdAt             DateTime             @default(now()) @map("created_at")
+  user                  User                 @relation(fields: [userId], references: [id], onDelete: Cascade, map: "fitness_goals_user_id_fkey")
+
+  @@unique([userId, version], map: "fitness_goals_user_id_version_key")
+  @@unique([userId, activeKey], map: "fitness_goals_user_id_active_key_key")
+  @@map("fitness_goals")
+}
+
+model BodyMeasurement {
+  id              String                @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId          String                @map("user_id") @db.Uuid
+  kind            BodyMeasurementKind
+  value           Decimal               @db.Decimal(8, 3)
+  unit            BodyMeasurementUnit
+  truthKind       PersistentTruthKind   @map("truth_kind")
+  sourceKind      PersistentSourceKind  @map("source_kind")
+  isApproximate   Boolean               @default(false) @map("is_approximate")
+  observedAt      DateTime              @map("observed_at")
+  recordedAt      DateTime              @default(now()) @map("recorded_at")
+  user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade, map: "body_measurements_user_id_fkey")
+
+  @@index([userId, kind, observedAt], map: "body_measurements_user_id_kind_observed_at_idx")
+  @@map("body_measurements")
+}
+
+model SafetyFlag {
+  id              String                @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId          String                @map("user_id") @db.Uuid
+  scope           SafetyFlagScope
+  answer          SafetyFlagAnswer
+  state           SafetyFlagState
+  activeKey       String?               @map("active_key")
+  sourceKind      PersistentSourceKind  @map("source_kind")
+  observedAt      DateTime?             @map("observed_at")
+  resolvedAt      DateTime?             @map("resolved_at")
+  createdAt       DateTime              @default(now()) @map("created_at")
+  updatedAt       DateTime              @updatedAt @map("updated_at")
+  user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade, map: "safety_flags_user_id_fkey")
+
+  @@unique([userId, activeKey], map: "safety_flags_user_id_active_key_key")
+  @@index([userId, state], map: "safety_flags_user_id_state_idx")
+  @@map("safety_flags")
+}
+
+model FitnessPlan {
+  id                    String             @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId                String             @map("user_id") @db.Uuid
+  version               Int
+  state                 FitnessPlanState
+  activeKey             String?            @map("active_key")
+  payloadSchemaVersion  Int                @default(1) @map("payload_schema_version")
+  payload               Json
+  evidenceVersion       String?            @map("evidence_version")
+  limitations           Json
+  confirmedAt           DateTime?          @map("confirmed_at")
+  activatedAt           DateTime?          @map("activated_at")
+  supersededAt          DateTime?          @map("superseded_at")
+  createdAt             DateTime           @default(now()) @map("created_at")
+  user                  User               @relation(fields: [userId], references: [id], onDelete: Cascade, map: "fitness_plans_user_id_fkey")
+
+  @@unique([userId, version], map: "fitness_plans_user_id_version_key")
+  @@unique([userId, activeKey], map: "fitness_plans_user_id_active_key_key")
+  @@map("fitness_plans")
+}
+
+/// Exists only after the user explicitly opts to retain the fully previewed source narrative.
+model CoachNote {
+  id          String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  text        String    @db.Text
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade, map: "coach_notes_user_id_fkey")
+
+  @@index([userId, createdAt], map: "coach_notes_user_id_created_at_idx")
+  @@map("coach_notes")
+}
+
+/// Stores mutation identity and outcome only, never the sensitive request body.
+model OnboardingMutationReceipt {
+  id                String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId            String    @map("user_id") @db.Uuid
+  clientMutationId  String    @map("client_mutation_id") @db.Uuid
+  commandType       String    @map("command_type")
+  requestHash       String    @map("request_hash")
+  resultRevision    Int?      @map("result_revision")
+  resultResourceId  String?   @map("result_resource_id") @db.Uuid
+  createdAt         DateTime  @default(now()) @map("created_at")
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade, map: "onboarding_mutation_receipts_user_id_fkey")
+
+  @@unique([userId, clientMutationId], map: "onboarding_mutation_receipts_user_id_client_mutation_id_key")
+  @@index([createdAt], map: "onboarding_mutation_receipts_created_at_idx")
+  @@map("onboarding_mutation_receipts")
+}
+
+enum OnboardingRunStatus {
+  NOT_STARTED       @map("not_started")
+  COLLECTING        @map("collecting")
+  REVIEW_REQUIRED   @map("review_required")
+  PROFILE_CONFIRMED @map("profile_confirmed")
+  PLAN_DRAFT_READY  @map("plan_draft_ready")
+  PLAN_CONFIRMED    @map("plan_confirmed")
+  COMPLETED         @map("completed")
+  PAUSED            @map("paused")
+
+  @@map("onboarding_run_status")
+}
+
+enum OnboardingRunEntryMode {
+  STRUCTURED       @map("structured")
+  TEXT             @map("text")
+  VOICE_TRANSCRIPT @map("voice_transcript")
+
+  @@map("onboarding_run_entry_mode")
+}
+
+enum OnboardingRunSourceKind {
+  NONE             @map("none")
+  STRUCTURED       @map("structured")
+  USER_TEXT        @map("user_text")
+  VOICE_TRANSCRIPT @map("voice_transcript")
+
+  @@map("onboarding_run_source_kind")
+}
+
+enum OnboardingNarrativeRetention {
+  UNDECIDED          @map("undecided")
+  DELETE             @map("delete")
+  SAVE_AS_COACH_NOTE @map("save_as_coach_note")
+
+  @@map("onboarding_narrative_retention")
+}
+
+enum PersistentTruthKind {
+  fact
+  estimate
+  inference
+  hypothesis
+
+  @@map("persistent_truth_kind")
+}
+
+enum PersistentSourceKind {
+  structured
+  user_text
+  voice_transcript
+  ai_extracted
+  import
+
+  @@map("persistent_source_kind")
+}
+
+enum UserFactState {
+  confirmed
+  superseded
+
+  @@map("user_fact_state")
+}
+
+enum FitnessRecordState {
+  proposed
+  confirmed
+  superseded
+
+  @@map("fitness_record_state")
+}
+
+enum FitnessBodyGoal {
+  fat_loss
+  muscle_gain
+  recomposition
+  maintenance
+
+  @@map("fitness_body_goal")
+}
+
+enum FitnessTrainingGoal {
+  general_fitness
+  strength
+  endurance
+  mobility_recovery
+
+  @@map("fitness_training_goal")
+}
+
+enum BodyMeasurementKind {
+  weight
+  waist
+  body_fat
+
+  @@map("body_measurement_kind")
+}
+
+enum BodyMeasurementUnit {
+  kg
+  cm
+  percent
+
+  @@map("body_measurement_unit")
+}
+
+enum SafetyFlagScope {
+  training
+  nutrition
+
+  @@map("safety_flag_scope")
+}
+
+enum SafetyFlagAnswer {
+  yes
+  unsure
+  declined
+
+  @@map("safety_flag_answer")
+}
+
+enum SafetyFlagState {
+  unresolved
+  resolved
+
+  @@map("safety_flag_state")
+}
+
+enum FitnessPlanState {
+  draft
+  confirmed
+  active
+  superseded
+
+  @@map("fitness_plan_state")
+}

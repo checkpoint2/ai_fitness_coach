@@ -21,8 +21,16 @@ Client E2E should cover valuable user journeys, including non-happy-path states 
 
 ## Future AI, Memory, And Hybrid-Onboarding Coverage
 
-These capabilities are still `absent`; this section defines the mandatory coverage when they are
-implemented and does not add runnable tests today.
+These capabilities are still `absent`; this section defines their mandatory end-to-end coverage.
+The persistence foundation now has runnable PostgreSQL tests for draft restoration and idempotency,
+fact correction/supersession/deletion, user isolation, and account-deletion cascade. Mobile,
+provider, evidence-content, and complete product-journey cases remain future coverage.
+
+The manual backend slice additionally has runnable tests for authenticated snapshots, strict payloads,
+pause/resume, stale revisions, mutation replay, atomic profile confirmation, default source deletion,
+opt-in coach notes, scoped safety blocks, exact plan-version confirmation, and completion. The bounded
+plan-context unit test proves that the read model omits user selectors, coach notes, and unrelated
+facts. Mobile, AI/speech provider, evidence-content, and full pilot journeys remain future coverage.
 
 - Backend integration must prove that memory is isolated between users, a forged or model-supplied
   user id cannot select another account, and deleting an account removes its memory and derived AI
@@ -56,7 +64,8 @@ Use integration tests for auth, persistence, isolation, deletion, and provider b
 unit tests for extraction and epistemic-state matrices; and Maestro only for the highest-value mobile
 journeys that can remain deterministic. Follow [`AI_COACH.md`](AI_COACH.md) and
 [`EVIDENCE.md`](EVIDENCE.md), with exact onboarding expectations from
-[`ONBOARDING.md`](ONBOARDING.md), when defining expected behavior.
+[`ONBOARDING.md`](ONBOARDING.md) and the planned boundary matrix in
+[`ONBOARDING_TECHNICAL_DESIGN.md`](ONBOARDING_TECHNICAL_DESIGN.md), when defining expected behavior.
 
 ## Choosing Test Level
 

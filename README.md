@@ -89,6 +89,7 @@ and report exact remaining account/domain authorizations without printing secret
 - `docs/LOCAL_DATABASE.md` - cross-platform local PostgreSQL setup for Windows, macOS, and Linux.
 - `docs/MOBILE_PILOT_UX.md` - the approved mobile pilot navigation, screen logic, states, and user flows.
 - `docs/ONBOARDING.md` - the approved, not-yet-implemented pilot contract for onboarding fields, branches, states, extraction, confirmation, and draft retention.
+- `docs/ONBOARDING_TECHNICAL_DESIGN.md` - the data model, backend contracts, state transitions, implementation status, delivery sequence, and test plan for onboarding and persistent memory.
 - `docs/AI_COACH.md` - AI coach behavior, memory use, uncertainty, confirmation, and safety boundaries.
 - `docs/EVIDENCE.md` - evidence policy and the review status of fitness rules and pilot settings.
 - `docs/DECISIONS.md` - compact register of significant approved and open product decisions.
