@@ -41,11 +41,22 @@ implemented and does not add runnable tests today.
   microphone permission still allows completion; and original audio is not retained after recognition.
 - Significant goals, plans, and recommendations must remain proposed until confirmed, and a failed
   backend write must never be reported as saved.
+- Onboarding coverage must exercise all three equal starting methods and a complete manual journey
+  without AI or microphone access; original audio must never persist, source text must be deleted by
+  default, and retaining it must require a separate explicit choice after a full-text preview.
+- Extraction matrices must prove sensitive values are not inferred, `UNKNOWN` never becomes a value,
+  and insufficient calculation data remains limited rather than falsely precise.
+- Resume and write coverage must restore an unfinished draft, keep accounts isolated, make resubmission
+  idempotent, and never report a failed or pending backend write as saved.
+- Safety-path coverage must preserve the profile while blocking the affected automatic plan, avoid
+  diagnosis or medical-clearance language, and keep onboarding incomplete until a confirmed plan is
+  actually saved.
 
 Use integration tests for auth, persistence, isolation, deletion, and provider boundaries; contract or
 unit tests for extraction and epistemic-state matrices; and Maestro only for the highest-value mobile
 journeys that can remain deterministic. Follow [`AI_COACH.md`](AI_COACH.md) and
-[`EVIDENCE.md`](EVIDENCE.md) when defining expected behavior.
+[`EVIDENCE.md`](EVIDENCE.md), with exact onboarding expectations from
+[`ONBOARDING.md`](ONBOARDING.md), when defining expected behavior.
 
 ## Choosing Test Level
 

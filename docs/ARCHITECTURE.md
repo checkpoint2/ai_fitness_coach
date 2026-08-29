@@ -117,6 +117,8 @@ send-fence budget. They then revoke every session and push token atomically.
 The AI fitness domain, hybrid onboarding, persistent memory, coach, and provider integrations are
 required for the pilot but are currently `absent` in the capability ledger. The boundaries below are
 an implementation constraint, not a claim that modules, schemas, routes, or adapters already exist.
+The approved product contract for onboarding fields, states, extraction, confirmation, resumption,
+and draft retention is [`ONBOARDING.md`](ONBOARDING.md); this architecture section does not redefine it.
 
 - PostgreSQL remains the source of truth for profile data, goals, preferences, confirmed facts,
   historical plan versions, nutrition, workouts, measurements, provenance, and corrections.

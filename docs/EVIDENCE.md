@@ -71,7 +71,15 @@ is claimed yet:
 | `EV-PILOT-003` | At least four confirmed nutrition days before weekly interpretation | Whether data sufficiency depends on distribution, goal, completeness, and decision type |
 | `EV-PILOT-004` | No confident weight-based adjustment before two weeks | Trend method, measurement frequency, exceptions, and goal-specific decision rules |
 | `EV-PILOT-005` | At least two comparable measurements before comparison | Measurement reliability, comparability criteria, interval, and body-site differences |
+| `EV-SAFETY-001` | Selection or adaptation of a preliminary physical-activity safety checkpoint | Official PAR-Q+ applicability, permitted use, translation, licensing, legal review, product wording, exclusions, and the response algorithm |
 
 Until review, these settings cannot be described as proven norms, immutable global constants,
 guarantees of result or safety, or substitutes for individual context. They may be revised or removed
 without changing the approved product goal or screen structure.
+
+`EV-SAFETY-001` remains `DRAFT`. The review must examine the
+[official PAR-Q+ materials](https://eparmedx.com/print-versions-of-par-q/) and their stated use terms;
+the product must not copy the questionnaire, represent its short checkpoint as medical clearance, or
+claim that applicability, translation, licensing, legal review, or the response algorithm is settled.
+The interim product behavior is bounded by [`ONBOARDING.md`](ONBOARDING.md), not by an active medical
+or safety rule.

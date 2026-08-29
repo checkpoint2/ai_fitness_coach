@@ -60,7 +60,7 @@
 - Use `README.md` as the source of truth for first-run repository download and bootstrap instructions, and `CHECKLIST.md` as the intake questionnaire and the record of the answers.
 - Treat `CHECKLIST.md` as the statement of what this product needs. Its capability ledger governs: build nothing it marks `absent` or `removed`, and treat an unlisted capability as `absent`. Dormant code, a leftover migration, or a mention in docs is not a product requirement; confirm with the user, then record the answer in the ledger.
 - Keep durable project choices in `CHECKLIST.md`, README files, and docs, not in this agent file.
-- Route AI, memory, and personalization work through `docs/AI_COACH.md`; evidence-dependent fitness rules through `docs/EVIDENCE.md`; approved product decisions through `docs/DECISIONS.md`; and mobile screen UX through `docs/MOBILE_PILOT_UX.md`.
+- Route onboarding fields, states, extraction, and confirmation through `docs/ONBOARDING.md`; AI, memory, and personalization work through `docs/AI_COACH.md`; evidence-dependent fitness rules through `docs/EVIDENCE.md`; approved product decisions through `docs/DECISIONS.md`; and mobile screen UX through `docs/MOBILE_PILOT_UX.md`.
 - Infrastructure, deployment, storage, local database, testing runbooks, and provider-specific choices live in `README.md` and `docs/`.
 - Before implementing or changing website data, public catalogs, carts, checkout, orders, subscriptions, entitlements, or payments, always read `docs/WEB_SURFACES.md` first and preserve its surface ownership and single browser-checkout rules.
 - When a surface is deferred, prefer a short note in that surface's README over extra agent instructions.

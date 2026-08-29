@@ -242,6 +242,10 @@ for materially missing data, and important values are confirmed before the backe
 complete manual path remains available when the microphone is refused or AI is unavailable. Original
 audio is not retained. Continuous real-time voice and cloud TTS remain deferred.
 
+[`docs/ONBOARDING.md`](docs/ONBOARDING.md) is the approved, not-yet-implemented exact contract for
+first-launch fields, branches, states, extraction, confirmation, and source-draft retention. It does
+not change the `absent` capability states in the ledger.
+
 The first-launch body-goal choices explicitly include weight/fat loss, maintaining form, muscle gain,
 and body recomposition. Recomposition is a separate goal: do not silently map it to maintenance or
 force a fixed calorie deficit. Its plan combines strength training, an appropriate nutrition target,

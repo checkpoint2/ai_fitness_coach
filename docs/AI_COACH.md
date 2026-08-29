@@ -3,6 +3,8 @@
 This document defines approved product behavior for the AI coach. It does not select a model provider,
 contain a system prompt, or claim that the capability is implemented. `CHECKLIST.md` remains the scope
 and capability source; `MOBILE_PILOT_UX.md` owns screen behavior; `EVIDENCE.md` owns fitness-rule status.
+[`ONBOARDING.md`](ONBOARDING.md) owns onboarding extraction, sensitive-field restrictions, editable
+draft confirmation, source-narrative deletion or explicit retention, and the complete manual fallback.
 
 ## Role And Voice
 
