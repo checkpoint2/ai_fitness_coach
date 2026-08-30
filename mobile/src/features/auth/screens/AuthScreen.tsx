@@ -99,7 +99,7 @@ export function AuthScreen() {
   }
 
   if (auth.user) {
-    return <Redirect href={'/components' as Href} />;
+    return <Redirect href={'/onboarding' as Href} />;
   }
 
   return (

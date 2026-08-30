@@ -26,6 +26,7 @@ import {
   setPendingExpoPushTokenCleanup,
 } from '@/features/notifications';
 import { createMobileApis, SessionController } from './api';
+import { OnboardingProvider } from '@/features/onboarding';
 import { authTransportForPlatform } from './auth-transport';
 import { uploadFileAccessForPlatform } from './upload-file-access';
 
@@ -72,11 +73,13 @@ export function AppProviders({ children }: PropsWithChildren) {
       >
         {/* Wrap this in <IapProvider api={apis.billing}> when turning subscriptions on. */}
         <AvatarProvider api={apis.avatar} picker={avatarPicker} send={uploads.send}>
-          <PushNotificationsProvider
-            api={apis.notifications}
-            registrationCoordinator={pushRegistrationCoordinator}>
-            {children}
-          </PushNotificationsProvider>
+          <OnboardingProvider api={apis.onboarding}>
+            <PushNotificationsProvider
+              api={apis.notifications}
+              registrationCoordinator={pushRegistrationCoordinator}>
+              {children}
+            </PushNotificationsProvider>
+          </OnboardingProvider>
         </AvatarProvider>
       </AuthProvider>
     </QueryClientProvider>

@@ -11,8 +11,8 @@ This section may be updated during first-run bootstrap. If the root `README.md` 
 - `/` is the register/login screen and intentionally has no tabs.
 - Mobile is a user-only product surface. Administrator tools and the seeded
   administrator account belong to the browser webapp, not the mobile UI.
-- Authenticated users land on `/components`, which lives in the bottom tab shell with `/profile`.
-- `/profile` lets a signed-in user set, replace, and remove a profile photo. Picking a photo resizes it and re-encodes it as JPEG before upload, so phone photos fit the size limit and render on the web too.
+- Authenticated users first pass through `/onboarding`. Completed users land on `/today`; the pilot shell exposes the five approved tabs: `/today`, `/plan`, `/diary`, `/coach`, and `/progress`.
+- `/profile` opens from the avatar instead of occupying a tab. It lets a signed-in user set, replace, and remove a profile photo. Picking a photo resizes it and re-encodes it as JPEG before upload, so phone photos fit the size limit and render on the web too.
 - `/details/[id]` is a stack screen outside the tabs and uses an in-screen back button at the top left.
 - `/paywall` renders the subscription flow, which ships **switched off**: `IapProvider` is not mounted, so the screen states that subscriptions are not enabled instead of offering a purchase. Turning it on is documented in `docs/IAP.md`.
 - Once enabled, App Store and Google Play subscriptions are working purchase paths, with App Store offer-code redemption on iOS. Google Play code redemption, signed promotional-offer purchases, alternative billing, and external purchase links are deferred.
@@ -45,7 +45,7 @@ because reaching the app must not depend on a subscription:
 
 | Email | Password | Mobile landing page |
 | --- | --- | --- |
-| `user@example.com` | `local-user-password` | `/components` |
+| `user@example.com` | `local-user-password` | `/onboarding` until the pilot setup is complete, then `/today` |
 
 Start the API and Expo app in separate terminals:
 
@@ -265,9 +265,9 @@ valid image and no way to read it.
 
 Use TanStack Query for server state, TanStack Form for forms, and shared Zod schemas for validation. Native iOS/Android use `/api/auth/token/*`: the refresh token is stored in `expo-secure-store` and the access token lives only in app memory. Logout first persists a non-secret pending marker beside that existing credential, then clears in-memory access/query state immediately. A confirmed revocation or terminal stale authority clears the refresh credential before clearing the marker; a timeout or network error retains both. On restart, bootstrap sees the marker before attempting refresh, remains anonymous, and boundedly retries logout with the retained credential and session-scoped push cleanup evidence. Expo Web follows the same marker protocol without copying its cookie authority into JavaScript: its refresh token stays in the backend-issued HttpOnly cookie and is never written to JavaScript storage. Expo Web serializes cookie-mutating auth requests through an exclusive Web Lock, with an in-process queue fallback. Successful register, login, and logout transitions increment a monotonic browser epoch inside that lock; storage/BroadcastChannel events invalidate other tabs, and refresh verifies both the captured epoch and the backend-issued `{ userId, sessionId }` identity before retrying an authenticated request. Bounded logout aborts its request at the timeout so it cannot retain the shared lock indefinitely. The native token transport does not use the browser coordinator.
 
-Product code lives in `src/features/auth`, `src/features/avatar`, `src/features/billing`, and `src/features/notifications`. `src/composition` builds the namespaced APIs and passes each provider only its own interface. `src/platform/api` owns endpoint-agnostic fetch, auth retry, base URL, and error parsing; each feature API owns its endpoint paths and schemas. Routes are thin wrappers that import features through public indexes. Run `bun run architecture:check` after boundary changes and `bun run doctor` (pinned to Expo Doctor 1.20.0) after Expo dependency changes.
+Product code lives in `src/features/auth`, `src/features/avatar`, `src/features/billing`, `src/features/notifications`, and `src/features/onboarding`. The onboarding feature currently exposes the authenticated structured manual fallback; text extraction and voice remain unavailable. `src/composition` builds the namespaced APIs and passes each provider only its own interface. `src/platform/api` owns endpoint-agnostic fetch, auth retry, base URL, and error parsing; each feature API owns its endpoint paths and schemas. Routes are thin wrappers that import features through public indexes. Run `bun run architecture:check` after boundary changes and `bun run doctor` (pinned to Expo Doctor 1.20.0) after Expo dependency changes.
 
-Mobile UI primitives live in `src/components/ui` and mirror the local Web ShadCN registry by file name. They are React Native-first implementations using native style props, controlled/uncontrolled values, and native touch patterns instead of DOM/Radix props such as `className` or `asChild`. The protected `/components` route is the local component catalog and the post-auth smoke surface.
+Mobile UI primitives live in `src/components/ui` and mirror the local Web ShadCN registry by file name. They are React Native-first implementations using native style props, controlled/uncontrolled values, and native touch patterns instead of DOM/Radix props such as `className` or `asChild`. The protected `/components` route remains a directly addressable local component catalog, but it is not part of the product navigation or the post-auth landing path.
 
 The canonical native color, radius, spacing, typography, and interaction tokens live in `src/components/ui/theme-tokens.ts` and `src/components/ui/theme.ts`. Shared dashboard composition belongs in `src/components/dashboard`: `ScreenShell`, `SiteHeader`, section/metric/account cards, navigation rail/items, data rows, and reusable loading/empty/error states. Product-owned auth and billing components accept semantic data, state, and callbacks; they do not expose `style` or `className`. Routes only arrange those closed components.
 

@@ -10,6 +10,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Typography } from '@/components/ui/typography';
 import { useUiTheme } from '@/components/ui/theme';
 import { TEST_IDS } from '@/constants/testIds';
+import { PILOT_TAB_ROUTES } from './app-tabs.model';
+
+const [todayTab, planTab, diaryTab, coachTab, progressTab] = PILOT_TAB_ROUTES;
 
 export default function AppTabs() {
   const theme = useUiTheme();
@@ -47,18 +50,18 @@ export default function AppTabs() {
         ],
       }}>
       <RouterTabs.Screen
-        name="components"
+        name={todayTab.name}
         options={{
-          title: 'Components',
+          title: todayTab.label,
           tabBarLabel: ({ color }) => (
             <Typography colorValue={color} variant="caption" weight="700">
-              Components
+              {todayTab.label}
             </Typography>
           ),
-          tabBarButtonTestID: TEST_IDS.tabs.componentsTab,
+          tabBarButtonTestID: TEST_IDS.tabs.todayTab,
           tabBarIcon: ({ color, size }) => (
             <SymbolView
-              name={{ ios: 'square.grid.2x2.fill', android: 'view_module', web: 'view_module' }}
+              name={{ ios: 'house.fill', android: 'home', web: 'home' }}
               size={size}
               tintColor={color}
             />
@@ -66,24 +69,83 @@ export default function AppTabs() {
         }}
       />
       <RouterTabs.Screen
-        name="profile"
+        name={planTab.name}
         options={{
-          title: 'Profile',
+          title: planTab.label,
           tabBarLabel: ({ color }) => (
             <Typography colorValue={color} variant="caption" weight="700">
-              Profile
+              {planTab.label}
             </Typography>
           ),
-          tabBarButtonTestID: TEST_IDS.tabs.profileTab,
+          tabBarButtonTestID: TEST_IDS.tabs.planTab,
           tabBarIcon: ({ color, size }) => (
             <SymbolView
-              name={{ ios: 'person.crop.circle.fill', android: 'person', web: 'person' }}
+              name={{ ios: 'list.bullet.clipboard.fill', android: 'list_alt', web: 'list_alt' }}
               size={size}
               tintColor={color}
             />
           ),
         }}
       />
+      <RouterTabs.Screen
+        name={diaryTab.name}
+        options={{
+          title: diaryTab.label,
+          tabBarLabel: ({ color }) => (
+            <Typography colorValue={color} variant="caption" weight="700">
+              {diaryTab.label}
+            </Typography>
+          ),
+          tabBarButtonTestID: TEST_IDS.tabs.diaryTab,
+          tabBarIcon: ({ color, size }) => (
+            <SymbolView
+              name={{ ios: 'book.closed.fill', android: 'menu_book', web: 'menu_book' }}
+              size={size}
+              tintColor={color}
+            />
+          ),
+        }}
+      />
+      <RouterTabs.Screen
+        name={coachTab.name}
+        options={{
+          title: coachTab.label,
+          tabBarLabel: ({ color }) => (
+            <Typography colorValue={color} variant="caption" weight="700">
+              {coachTab.label}
+            </Typography>
+          ),
+          tabBarButtonTestID: TEST_IDS.tabs.coachTab,
+          tabBarIcon: ({ color, size }) => (
+            <SymbolView
+              name={{ ios: 'bubble.left.and.bubble.right.fill', android: 'forum', web: 'forum' }}
+              size={size}
+              tintColor={color}
+            />
+          ),
+        }}
+      />
+      <RouterTabs.Screen
+        name={progressTab.name}
+        options={{
+          title: progressTab.label,
+          tabBarLabel: ({ color }) => (
+            <Typography colorValue={color} variant="caption" weight="700">
+              {progressTab.label}
+            </Typography>
+          ),
+          tabBarButtonTestID: TEST_IDS.tabs.progressTab,
+          tabBarIcon: ({ color, size }) => (
+            <SymbolView
+              name={{ ios: 'chart.line.uptrend.xyaxis', android: 'monitoring', web: 'monitoring' }}
+              size={size}
+              tintColor={color}
+            />
+          ),
+        }}
+      />
+      <RouterTabs.Screen name="components" options={{ href: null }} />
+      <RouterTabs.Screen name="profile" options={{ href: null }} />
     </RouterTabs>
   );
 }

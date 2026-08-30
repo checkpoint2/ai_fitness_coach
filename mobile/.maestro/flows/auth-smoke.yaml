@@ -14,7 +14,8 @@ tags:
     commands:
       - tapOn: Open
 - extendedWaitUntil:
-    visible: Golden path template
+    visible:
+      id: ${SUBMIT_BUTTON_ID}
     timeout: 60000
 - tapOn:
     id: ${NAME_INPUT_ID}
@@ -39,8 +40,127 @@ tags:
 - tapOn:
     id: ${SUBMIT_BUTTON_ID}
     enabled: true
+- extendedWaitUntil:
+    visible:
+      id: ${ONBOARDING_MANUAL_START_ID}
+    timeout: 60000
+- tapOn:
+    id: ${ONBOARDING_MANUAL_START_ID}
+- tapOn:
+    id: ${ONBOARDING_ADULT_ID}
+- tapOn:
+    id: ${ONBOARDING_BIRTH_YEAR_DECLINED_ID}
+- tapOn:
+    id: ${ONBOARDING_CALCULATION_SEX_DECLINED_ID}
+- tapOn:
+    id: ${ONBOARDING_HEIGHT_INPUT_ID}
+- inputText: 180
+- tapOn:
+    id: ${ONBOARDING_WEIGHT_INPUT_ID}
+- inputText: 82.5
+- scrollUntilVisible:
+    element:
+      id: ${ONBOARDING_RECOMPOSITION_ID}
+    direction: DOWN
+    centerElement: true
+    visibilityPercentage: 100
+    timeout: 10000
+- tapOn:
+    id: ${ONBOARDING_RECOMPOSITION_ID}
+- tapOn:
+    id: ${ONBOARDING_STRENGTH_ID}
+- scrollUntilVisible:
+    element:
+      id: ${ONBOARDING_EXPERIENCE_INPUT_ID}
+    direction: DOWN
+    centerElement: true
+    visibilityPercentage: 100
+    timeout: 10000
+- tapOn:
+    id: ${ONBOARDING_EXPERIENCE_INPUT_ID}
+- inputText: Training for one year
+- tapOn:
+    id: ${ONBOARDING_HOME_ID}
+- tapOn:
+    id: ${ONBOARDING_EQUIPMENT_INPUT_ID}
+- inputText: Dumbbells
+- tapOn:
+    id: ${ONBOARDING_TRAINING_DAYS_INPUT_ID}
+- inputText: 3
+- tapOn:
+    id: ${ONBOARDING_WORKOUT_DURATION_INPUT_ID}
+- inputText: 60
+- scrollUntilVisible:
+    element:
+      id: ${ONBOARDING_ORDINARY_DAY_INPUT_ID}
+    direction: DOWN
+    centerElement: true
+    visibilityPercentage: 100
+    timeout: 10000
+- tapOn:
+    id: ${ONBOARDING_ORDINARY_DAY_INPUT_ID}
+- inputText: Mostly seated work and evening walks
+- tapOn:
+    id: ${ONBOARDING_ALLERGIES_NONE_ID}
+- tapOn:
+    id: ${ONBOARDING_NUTRITION_HYBRID_ID}
+- scrollUntilVisible:
+    element:
+      id: ${ONBOARDING_CURRENT_PAIN_NO_ID}
+    direction: DOWN
+    centerElement: true
+    visibilityPercentage: 100
+    timeout: 10000
+- tapOn:
+    id: ${ONBOARDING_CURRENT_PAIN_NO_ID}
+- tapOn:
+    id: ${ONBOARDING_DOCTOR_RESTRICTION_NO_ID}
+- tapOn:
+    id: ${ONBOARDING_ORDINARY_FITNESS_NO_ID}
+- tapOn:
+    id: ${ONBOARDING_SUPERVISED_ONLY_NO_ID}
+- scrollUntilVisible:
+    element:
+      id: ${ONBOARDING_SAVE_DRAFT_ID}
+    direction: DOWN
+    centerElement: true
+    visibilityPercentage: 100
+    timeout: 10000
+- tapOn:
+    id: ${ONBOARDING_SAVE_DRAFT_ID}
+- extendedWaitUntil:
+    visible:
+      id: ${ONBOARDING_REVIEW_ID}
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: ${ONBOARDING_CONFIRM_PROFILE_ID}
+    direction: DOWN
+    centerElement: true
+    visibilityPercentage: 100
+    timeout: 10000
+- tapOn:
+    id: ${ONBOARDING_CONFIRM_PROFILE_ID}
+- tapOn: Подготовить стратегию
+- extendedWaitUntil:
+    visible:
+      id: ${ONBOARDING_PLAN_REVIEW_ID}
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: ${ONBOARDING_CONFIRM_PLAN_ID}
+    direction: DOWN
+    centerElement: true
+    visibilityPercentage: 100
+    timeout: 10000
+- tapOn:
+    id: ${ONBOARDING_CONFIRM_PLAN_ID}
+- tapOn: Открыть «Сегодня»
 - assertVisible:
-    id: ${DASHBOARD_ID}
+    id: ${TODAY_SCREEN_ID}
+- extendedWaitUntil:
+    notVisible: Сохраняем завершение настройки
+    timeout: 30000
 - stopApp
 - openLink:
     link: ${DEV_CLIENT_URL}
@@ -51,8 +171,19 @@ tags:
       - tapOn: Open
 - extendedWaitUntil:
     visible:
-      id: ${DASHBOARD_ID}
+      id: ${TODAY_SCREEN_ID}
     timeout: 60000
+- tapOn:
+    id: ${PROFILE_BUTTON_ID}
+- assertVisible:
+    id: ${PROFILE_SCREEN_ID}
+- scrollUntilVisible:
+    element:
+      id: ${LOGOUT_BUTTON_ID}
+    direction: DOWN
+    centerElement: true
+    visibilityPercentage: 100
+    timeout: 10000
 - tapOn:
     id: ${LOGOUT_BUTTON_ID}
 - assertVisible:

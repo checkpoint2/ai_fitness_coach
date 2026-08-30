@@ -246,8 +246,17 @@ export function runMaestroPolicyAudit() {
     'auth-smoke.yaml must reopen DEV_CLIENT_URL after stopApp to avoid landing on the simulator home screen',
   )
   assert(
-    flow.includes('id: ${DASHBOARD_ID}'),
-    'auth-smoke.yaml must assert the signed-in dashboard after registration and restore',
+    flow.includes('id: ${TODAY_SCREEN_ID}') &&
+      flow.includes('id: ${PROFILE_BUTTON_ID}') &&
+      flow.includes('id: ${PROFILE_SCREEN_ID}'),
+    'auth-smoke.yaml must assert Today after registration/restore and open Profile before logout',
+  )
+  assert(
+    flow.includes('id: ${ONBOARDING_MANUAL_START_ID}') &&
+      flow.includes('id: ${ONBOARDING_SAVE_DRAFT_ID}') &&
+      flow.includes('id: ${ONBOARDING_CONFIRM_PROFILE_ID}') &&
+      flow.includes('id: ${ONBOARDING_CONFIRM_PLAN_ID}'),
+    'auth-smoke.yaml must complete the manual onboarding fallback before asserting Today',
   )
   assert(!flow.includes('hideKeyboard'), 'auth-smoke.yaml must not use flaky hideKeyboard')
   assert(

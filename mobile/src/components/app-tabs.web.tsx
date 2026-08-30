@@ -6,6 +6,7 @@ import {
   type TabListProps,
   type TabTriggerSlotProps,
 } from 'expo-router/ui';
+import type { Href } from 'expo-router';
 import type { SymbolViewProps } from 'expo-symbols';
 import {
   StyleSheet,
@@ -24,6 +25,9 @@ import {
 } from '@/components/dashboard';
 import { useUiTheme } from '@/components/ui/theme';
 import { TEST_IDS } from '@/constants/testIds';
+import { PILOT_TAB_ROUTES } from './app-tabs.model';
+
+const [todayTab, planTab, diaryTab, coachTab, progressTab] = PILOT_TAB_ROUTES;
 
 export default function AppTabs() {
   const theme = useUiTheme();
@@ -56,51 +60,117 @@ export default function AppTabs() {
       <TabList asChild>
         {usesRail ? (
           <RailTabList>
-            <TabTrigger name="components" href="/components" asChild>
+            <TabTrigger name={todayTab.name} href={todayTab.href as Href} asChild>
               <RailTabButton
                 icon={{
-                  ios: 'square.grid.2x2.fill',
-                  android: 'view_module',
-                  web: 'view_module',
+                  ios: 'house.fill',
+                  android: 'home',
+                  web: 'home',
                 }}
-                testID={TEST_IDS.tabs.componentsTab}>
-                Components
+                testID={TEST_IDS.tabs.todayTab}>
+                {todayTab.label}
               </RailTabButton>
             </TabTrigger>
-            <TabTrigger name="profile" href="/profile" asChild>
+            <TabTrigger name={planTab.name} href={planTab.href as Href} asChild>
               <RailTabButton
                 icon={{
-                  ios: 'person.crop.circle.fill',
-                  android: 'person',
-                  web: 'person',
+                  ios: 'list.bullet.clipboard.fill',
+                  android: 'list_alt',
+                  web: 'list_alt',
                 }}
-                testID={TEST_IDS.tabs.profileTab}>
-                Profile
+                testID={TEST_IDS.tabs.planTab}>
+                {planTab.label}
+              </RailTabButton>
+            </TabTrigger>
+            <TabTrigger name={diaryTab.name} href={diaryTab.href as Href} asChild>
+              <RailTabButton
+                icon={{
+                  ios: 'book.closed.fill',
+                  android: 'menu_book',
+                  web: 'menu_book',
+                }}
+                testID={TEST_IDS.tabs.diaryTab}>
+                {diaryTab.label}
+              </RailTabButton>
+            </TabTrigger>
+            <TabTrigger name={coachTab.name} href={coachTab.href as Href} asChild>
+              <RailTabButton
+                icon={{
+                  ios: 'bubble.left.and.bubble.right.fill',
+                  android: 'forum',
+                  web: 'forum',
+                }}
+                testID={TEST_IDS.tabs.coachTab}>
+                {coachTab.label}
+              </RailTabButton>
+            </TabTrigger>
+            <TabTrigger name={progressTab.name} href={progressTab.href as Href} asChild>
+              <RailTabButton
+                icon={{
+                  ios: 'chart.line.uptrend.xyaxis',
+                  android: 'monitoring',
+                  web: 'monitoring',
+                }}
+                testID={TEST_IDS.tabs.progressTab}>
+                {progressTab.label}
               </RailTabButton>
             </TabTrigger>
           </RailTabList>
         ) : (
           <BottomTabList style={tabBarStyle}>
-            <TabTrigger name="components" href="/components" asChild>
+            <TabTrigger name={todayTab.name} href={todayTab.href as Href} asChild>
               <TabButton
                 icon={{
-                  ios: 'square.grid.2x2.fill',
-                  android: 'view_module',
-                  web: 'view_module',
+                  ios: 'house.fill',
+                  android: 'home',
+                  web: 'home',
                 }}
-                testID={TEST_IDS.tabs.componentsTab}>
-                Components
+                testID={TEST_IDS.tabs.todayTab}>
+                {todayTab.label}
               </TabButton>
             </TabTrigger>
-            <TabTrigger name="profile" href="/profile" asChild>
+            <TabTrigger name={planTab.name} href={planTab.href as Href} asChild>
               <TabButton
                 icon={{
-                  ios: 'person.crop.circle.fill',
-                  android: 'person',
-                  web: 'person',
+                  ios: 'list.bullet.clipboard.fill',
+                  android: 'list_alt',
+                  web: 'list_alt',
                 }}
-                testID={TEST_IDS.tabs.profileTab}>
-                Profile
+                testID={TEST_IDS.tabs.planTab}>
+                {planTab.label}
+              </TabButton>
+            </TabTrigger>
+            <TabTrigger name={diaryTab.name} href={diaryTab.href as Href} asChild>
+              <TabButton
+                icon={{
+                  ios: 'book.closed.fill',
+                  android: 'menu_book',
+                  web: 'menu_book',
+                }}
+                testID={TEST_IDS.tabs.diaryTab}>
+                {diaryTab.label}
+              </TabButton>
+            </TabTrigger>
+            <TabTrigger name={coachTab.name} href={coachTab.href as Href} asChild>
+              <TabButton
+                icon={{
+                  ios: 'bubble.left.and.bubble.right.fill',
+                  android: 'forum',
+                  web: 'forum',
+                }}
+                testID={TEST_IDS.tabs.coachTab}>
+                {coachTab.label}
+              </TabButton>
+            </TabTrigger>
+            <TabTrigger name={progressTab.name} href={progressTab.href as Href} asChild>
+              <TabButton
+                icon={{
+                  ios: 'chart.line.uptrend.xyaxis',
+                  android: 'monitoring',
+                  web: 'monitoring',
+                }}
+                testID={TEST_IDS.tabs.progressTab}>
+                {progressTab.label}
               </TabButton>
             </TabTrigger>
           </BottomTabList>
