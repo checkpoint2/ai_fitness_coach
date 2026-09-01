@@ -14,6 +14,10 @@ mobile/.expo/
 mobile/.maestro/reports/
 mobile/expo-env.d.ts
 
+# Editorial exercise-media sources live outside the repository
+/AI_EXERCISE_CHARACTER_PACK_V1.zip
+/mobile/assets/exercises/**/storyboards/
+
 # Runtime and logs
 *.log
 npm-debug.log*
