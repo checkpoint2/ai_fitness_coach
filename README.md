@@ -255,6 +255,14 @@ Terraform CLI rather than the normal application toolchain.
 - `bun run dev:backend:s3` - start the backend against the local S3 container instead of the disk.
 - `bun run check` - canonical task-completion gate: template invariants, architecture, dependency
   audit, typecheck, lint, and all tests; requires registry access and Docker for backend integration.
+- `bun run check:mobile` - scoped mobile gate: template and architecture invariants, then mobile
+  typecheck, lint, and unit tests.
+- `bun run check:backend` - scoped backend gate: template and architecture invariants, then backend
+  typecheck plus unit and PostgreSQL integration tests; requires Docker.
+- `bun run check:contracts` - scoped shared-contract gate: template and architecture invariants,
+  then contract typecheck and tests.
+- `bun run check:pilot` - gate for the active `contracts` + `backend` + `mobile` pilot surfaces;
+  requires Docker for backend integration. Dependency changes additionally require `bun run audit`.
 - `bun run template:check` - validate checklist state, capability-ledger states, equivalent agent
   instructions, and local Markdown file, directory, and heading links.
 - `bun run typecheck` - run TypeScript checks across workspaces.

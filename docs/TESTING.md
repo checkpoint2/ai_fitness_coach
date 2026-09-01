@@ -10,6 +10,21 @@ capability ledger, equivalent `AGENTS.md` / `CLAUDE.md` instructions, and local 
 directory, and heading links. Terraform remains an explicit optional signal through
 `bun run test:terraform` when its CLI is installed.
 
+Use the root scoped gates for the smallest ordinary validation that owns a change:
+
+- `bun run check:mobile` runs the mandatory repository invariants, then mobile typecheck, lint, and
+  unit tests.
+- `bun run check:backend` runs the mandatory repository invariants, then backend typecheck, unit
+  tests, and PostgreSQL integration tests. It requires Docker.
+- `bun run check:contracts` runs the mandatory repository invariants, then shared-contract
+  typecheck and tests.
+- `bun run check:pilot` runs the mandatory repository invariants and all checks for the active
+  `contracts`, `backend`, and `mobile` pilot surfaces. It requires Docker.
+
+These commands do not replace the canonical full `bun run check`. They intentionally omit deferred
+browser surfaces and the global dependency audit; run `bun run audit` whenever dependencies or the
+lockfile change, and use the full gate when the task or release needs repository-wide confidence.
+
 ## Pyramid
 
 - Contracts/unit: shared Zod schema matrices, env parsing, JWTs, password hashing, client API refresh/retry behavior, and token cleanup.
