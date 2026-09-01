@@ -72,6 +72,7 @@ is claimed yet:
 | `EV-PILOT-004` | No confident weight-based adjustment before two weeks | Trend method, measurement frequency, exceptions, and goal-specific decision rules |
 | `EV-PILOT-005` | At least two comparable measurements before comparison | Measurement reliability, comparability criteria, interval, and body-site differences |
 | `EV-SAFETY-001` | Selection or adaptation of a preliminary physical-activity safety checkpoint | Official PAR-Q+ applicability, permitted use, translation, licensing, legal review, product wording, exclusions, and the response algorithm |
+| `EV-TRAINING-001` | First general-fitness exercise library and its selection boundaries | Owner review of technique text and demonstrations; applicable population, exclusions, substitutions, and separation from medical or rehabilitation use |
 
 Until review, these settings cannot be described as proven norms, immutable global constants,
 guarantees of result or safety, or substitutes for individual context. They may be revised or removed
@@ -83,3 +84,14 @@ the product must not copy the questionnaire, represent its short checkpoint as m
 claim that applicability, translation, licensing, legal review, or the response algorithm is settled.
 The interim product behavior is bounded by [`ONBOARDING.md`](ONBOARDING.md), not by an active medical
 or safety rule.
+
+`EV-TRAINING-001` remains `DRAFT`. The Russian text for all 21 version-1 cards in the first editorial
+batch was approved by the owner-trainer on 2026-08-31 under review reference
+`OWNER-TRAINING-CONTENT-2026-08-31-BATCH-1-V1`. All 21 static storyboards were approved as production
+references under `OWNER-TRAINING-STORYBOARDS-2026-08-31-BATCH-1-V1`. The `bodyweight-squat` version 1
+short video was additionally approved under `owner-review-bodyweight-squat-2026-08-31`; matching
+moving demonstrations for the other 20 cards have not been created or approved. The batch and its
+checked reference set live in
+[`EXERCISE_LIBRARY.md`](EXERCISE_LIBRARY.md). Text approval does not activate numerical volume,
+intensity, progression, medical, or rehabilitation rules; those require their own applicable
+evidence records.

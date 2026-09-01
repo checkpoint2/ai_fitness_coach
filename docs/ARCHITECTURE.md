@@ -116,15 +116,34 @@ send-fence budget. They then revoke every session and push token atomically.
 
 The AI fitness domain, hybrid onboarding, persistent memory, coach, and provider integrations are
 required for the pilot but are currently `absent` in the capability ledger. Shared contracts, pure
-workflow rules, PostgreSQL persistence, authenticated manual onboarding routes, and a purpose-bounded
-plan context builder now exist. No mobile journey, evidence-approved plan content, AI extraction,
-speech path, coach chat, or provider adapter exists.
+workflow rules, PostgreSQL persistence, authenticated manual onboarding routes, a purpose-bounded
+plan context builder, and a first manual nutrition/activity/measurement diary slice now exist. The
+diary module owns current-user list/create/correct/delete operations, preserves provenance and fact/estimate
+labels, and never accepts a client-selected user id. Body measurements reuse the persistent
+`body_measurements` history rather than creating a competing store. A separate user-and-local-date
+record stores the reversible claim that nutrition and activity entry is complete; it stores no energy
+color or interpretation. The mobile progress read path reuses bounded authenticated month queries,
+keeps query-cache keys account-scoped, and derives only a factual per-day summary; diary mutations
+invalidate inactive history caches so corrections are reflected on the next read. Evidence-approved
+plan content, AI extraction, speech, coach chat, and provider adapters do not exist.
+The training module now owns a first manual workout-history boundary: bounded current-user reads,
+idempotent confirmed creates, optimistic full-session corrections, non-disclosing deletes, and nested
+exercise/set persistence in PostgreSQL. Mobile account-scoped query keys feed `Plan`, `Today`, and
+the factual `Progress` summary. This history is not an exercise library or an automated plan;
+the complete verified library, planned-session execution, remote media delivery, offline
+synchronization, and progression remain absent.
+The same module has a versioned exercise-catalog foundation. Its authenticated read port returns only
+complete `active` records with a review reference, textual fallback, and demonstration asset reference;
+draft, reviewed-but-not-active, and malformed active records fail closed. Development seed data
+publishes only the reviewed `bodyweight-squat` version; mobile maps its exact asset key to the bundled
+poster and short video and falls back to text for unknown keys. The remaining library stays hidden,
+and no production object-storage/CDN delivery architecture is selected by this boundary.
 The approved product contract for onboarding fields, states, extraction, confirmation, resumption,
 and draft retention is [`ONBOARDING.md`](ONBOARDING.md); this architecture section does not redefine it.
 The proposed data model, backend contracts, concurrency rules, implementation sequence, and test
-matrix are in [`ONBOARDING_TECHNICAL_DESIGN.md`](ONBOARDING_TECHNICAL_DESIGN.md). Its first three stages
-exist: contracts/rules, a user-owned Prisma repository foundation, and the authenticated manual
-backend flow. Mobile clients, evidence-approved plan generation, and providers do not.
+matrix are in [`ONBOARDING_TECHNICAL_DESIGN.md`](ONBOARDING_TECHNICAL_DESIGN.md). Its manual contracts,
+user-owned Prisma repository, authenticated backend flow, and structured mobile path exist;
+AI/speech extraction, evidence-approved plan generation, and providers do not.
 
 - PostgreSQL remains the source of truth for profile data, goals, preferences, confirmed facts,
   historical plan versions, nutrition, workouts, measurements, provenance, and corrections.

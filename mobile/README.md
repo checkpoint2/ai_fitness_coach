@@ -12,6 +12,10 @@ This section may be updated during first-run bootstrap. If the root `README.md` 
 - Mobile is a user-only product surface. Administrator tools and the seeded
   administrator account belong to the browser webapp, not the mobile UI.
 - Authenticated users first pass through `/onboarding`. Completed users land on `/today`; the pilot shell exposes the five approved tabs: `/today`, `/plan`, `/diary`, `/coach`, and `/progress`.
+- `/diary` implements the first manual product slice: a signed-in user can add, correct, and delete confirmed nutrition, activity, weight, and voluntary body-measurement records, optionally distinguishing known values from estimates. The user can separately mark nutrition and activity complete for the local day and reverse that mark; this does not assign an energy result. Records persist in PostgreSQL and are scoped by the authenticated backend session. AI, voice, photo input, training, progress trends, and energy classification are not part of this slice.
+- `/today` reads that current user's diary and shows only explicitly recorded food calories. It deliberately leaves expenditure, target, balance, and day color unavailable until the corresponding evidence-reviewed rules and complete inputs exist.
+- `/progress` reads the current user's bounded monthly diary history, marks user-confirmed complete days neutrally, and shows the factual nutrition, activity, measurement, completeness, and estimate summary for a selected date. It deliberately does not assign green/yellow/red energy results yet.
+- `/plan` shows the confirmed onboarding strategy limits, the fail-closed versioned exercise catalog, and the first manual training-history slice. A signed-in user can record, correct, and delete an actually completed workout with exercises and sets; the same factual record appears on `/today` and in the selected-day `/progress` summary. Development seed data publishes only the owner-approved `bodyweight-squat` version with its bundled poster and silent looping video; unknown or unbundled media keys fail closed to text. This technical card does not yet provide a prescribed program, offline workout execution, progression, or the remaining exercise library.
 - `/profile` opens from the avatar instead of occupying a tab. It lets a signed-in user set, replace, and remove a profile photo. Picking a photo resizes it and re-encodes it as JPEG before upload, so phone photos fit the size limit and render on the web too.
 - `/details/[id]` is a stack screen outside the tabs and uses an in-screen back button at the top left.
 - `/paywall` renders the subscription flow, which ships **switched off**: `IapProvider` is not mounted, so the screen states that subscriptions are not enabled instead of offering a purchase. Turning it on is documented in `docs/IAP.md`.
@@ -82,6 +86,7 @@ is never part of deployment.
 - Expo SecureStore
 - Expo Notifications
 - Expo ImagePicker, ImageManipulator, and FileSystem (profile photo upload)
+- Expo Video (approved exercise demonstrations)
 - Expo Apple Authentication and React Native Google Sign-In for optional social auth
 - Expo IAP for App Store and Google Play subscription transport
 - Zod contracts from `@ai-fitness-coach/contracts`

@@ -13,7 +13,7 @@ directory, and heading links. Terraform remains an explicit optional signal thro
 ## Pyramid
 
 - Contracts/unit: shared Zod schema matrices, env parsing, JWTs, password hashing, client API refresh/retry behavior, and token cleanup.
-- Backend integration: refresh-token rotation and replay detection, one-time password reset and session revocation, auth/role guards, profile updates, serialized administrator role changes, duplicate registration, concurrency, and stable error shapes through real routes and PostgreSQL.
+- Backend integration: refresh-token rotation and replay detection, one-time password reset and session revocation, auth/role guards, profile updates, onboarding and manual diary persistence/isolation/correction, serialized administrator role changes, duplicate registration, concurrency, and stable error shapes through real routes and PostgreSQL.
 - Webapp Playwright: valuable browser flows through a real backend and Vite UI.
 - Mobile Maestro: valuable mobile smoke and regression flows against an installed Expo development build.
 
@@ -31,6 +31,29 @@ pause/resume, stale revisions, mutation replay, atomic profile confirmation, def
 opt-in coach notes, scoped safety blocks, exact plan-version confirmation, and completion. The bounded
 plan-context unit test proves that the read model omits user selectors, coach notes, and unrelated
 facts. Mobile, AI/speech provider, evidence-content, and full pilot journeys remain future coverage.
+
+The first diary slice has runnable contract and PostgreSQL integration coverage for authenticated
+nutrition/activity/measurement creation, idempotent replay, persistence, mixed timelines, cross-user
+isolation, optimistic correction, and deletion. Mobile unit coverage protects current-user route construction
+and prevents unquantified food from being silently counted as zero. Reversible local-day completeness
+is covered separately and cannot return an energy color or result. Mobile unit coverage also checks
+that progress summaries preserve missing values and that a confirmed calendar day remains neutral.
+Targets, energy calculations, training, measurement trends, AI/voice/photo input, and a device journey
+remain future coverage.
+
+The first training-history slice has runnable contract and PostgreSQL integration coverage for nested
+exercises/sets, strict current-user routes, idempotent create, bounded restore, optimistic correction,
+cross-user isolation, non-disclosing deletion, and account cascade. Mobile unit coverage protects route
+construction and draft parsing without inventing missing set values. Planned-workout execution, the
+remaining media library, offline synchronization, progression rules, and a device journey remain
+future coverage.
+
+The exercise-catalog foundation additionally checks that the read route requires authentication and
+returns only complete active versions. Contract and PostgreSQL integration coverage reject or hide
+records without a review reference, textual content, or demonstration metadata. The development-seed
+test verifies the single reviewed `bodyweight-squat` record, while mobile unit coverage verifies the
+bundled poster/video mapping and fail-closed media layers. These tests do not claim that the remaining
+20 demonstrations or a production media-delivery path exist.
 
 - Backend integration must prove that memory is isolated between users, a forged or model-supplied
   user id cannot select another account, and deleting an account removes its memory and derived AI

@@ -21,6 +21,19 @@ One suite proves it. `backend/src/storage/storage-contract.ts` defines the behav
 
 The product-level questions live in [CHECKLIST.md](../CHECKLIST.md) under files, images, and media, and the answers are recorded there. Ask them before implementation; do not restate them here, so the intake keeps one source.
 
+## Bundled Exercise Demonstrations
+
+Exercise demonstrations are editorial application assets, not private user uploads. The first
+approved `bodyweight-squat` poster and video are bundled under `mobile/assets/exercises/v1` so the
+vertical card can be validated on a phone without a CDN or network dependency. The mobile client
+maps only the exact reviewed `demonstration.assetKey` to that bundled media and fails closed to the
+text instruction for unknown keys.
+
+This is deliberately limited to the first technical card. Copying the full video library into Git
+would grow every checkout and application bundle; before producing the wider library, choose and
+test its production object-storage/CDN delivery, caching, versioning, rollback, and deletion policy.
+That future decision does not change the private user-upload contract below.
+
 ## Local Development
 
 Nothing to start. `bun run dev` uses the filesystem driver and writes to `backend/.storage`, which is git-ignored.

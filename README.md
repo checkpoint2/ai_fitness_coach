@@ -92,6 +92,8 @@ and report exact remaining account/domain authorizations without printing secret
 - `docs/ONBOARDING_TECHNICAL_DESIGN.md` - the data model, backend contracts, state transitions, implementation status, delivery sequence, and test plan for onboarding and persistent memory.
 - `docs/AI_COACH.md` - AI coach behavior, memory use, uncertainty, confirmation, and safety boundaries.
 - `docs/EVIDENCE.md` - evidence policy and the review status of fitness rules and pilot settings.
+- `docs/EXERCISE_LIBRARY.md` - owner-review draft for versioned exercise instructions,
+  substitutions, and demonstration briefs; no card is active merely because it appears there.
 - `docs/DECISIONS.md` - compact register of significant approved and open product decisions.
 - `docs/EMAIL.md` - transactional email: the four drivers, Postbox and Resend, and how delivery reaches the outbox.
 - `docs/STORAGE.md` - private file storage: the filesystem and S3 drivers, the local S3 container, and the upload contract.
