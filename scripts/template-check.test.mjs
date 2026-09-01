@@ -309,7 +309,10 @@ describe('agent instruction equivalence', () => {
   test('accepts only the intentional title and reciprocal filename differences', () => {
     expect(validateAgentInstructions(currentAgents, currentClaude)).toEqual([])
 
-    const drifted = currentClaude.replace('Prefer evidence over ceremony.', 'Prefer guesses over evidence.')
+    const drifted = currentClaude.replace(
+      'Prefer the smallest coherent solution and the lightest workflow that proves it.',
+      'Prefer the largest possible solution regardless of evidence.',
+    )
     expect(validateAgentInstructions(currentAgents, drifted)).toEqual([
       'AGENTS.md and CLAUDE.md differ beyond their document titles and reciprocal filename references.',
     ])
