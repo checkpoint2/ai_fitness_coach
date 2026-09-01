@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
   content: {
     alignSelf: 'center',
     maxWidth: 1120,
+    minWidth: 0,
     width: '100%',
   },
 });

@@ -19,10 +19,10 @@
     "e2e:maestro:setup": "bash scripts/e2e/setup-maestro-cli.sh"
   },
   "dependencies": {
+    "@ai-fitness-coach/contracts": "workspace:*",
     "@react-native-google-signin/google-signin": "^16.1.4",
     "@tanstack/react-form": "^1.33.3",
     "@tanstack/react-query": "^5.101.4",
-    "@ai-fitness-coach/contracts": "workspace:*",
     "expo": "~57.0.16",
     "expo-apple-authentication": "~57.0.1",
     "expo-constants": "~57.0.14",
@@ -43,6 +43,7 @@
     "expo-status-bar": "~57.0.1",
     "expo-symbols": "~57.0.1",
     "expo-system-ui": "~57.0.2",
+    "expo-video": "57.0.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.2",

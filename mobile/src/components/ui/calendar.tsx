@@ -27,6 +27,7 @@ export function Calendar({
   onSelect,
   onMonthChange,
   disabled,
+  highlighted,
   showOutsideDays = true,
   style,
   ...props
@@ -38,6 +39,7 @@ export function Calendar({
   onSelect?: (selection: CalendarSelection) => void;
   onMonthChange?: (month: Date) => void;
   disabled?: (date: Date) => boolean;
+  highlighted?: (date: Date) => boolean;
   showOutsideDays?: boolean;
 }) {
   const theme = useUiTheme();
@@ -86,6 +88,7 @@ export function Calendar({
               date={date}
               disabled={isDisabled}
               outside={isOutside}
+              highlighted={highlighted?.(date)}
               selected={isSelected}
               today={isToday}
               inRange={inRange}
@@ -107,6 +110,7 @@ export function CalendarDayButton({
   selected,
   today,
   outside,
+  highlighted,
   inRange,
   disabled,
   style,
@@ -116,6 +120,7 @@ export function CalendarDayButton({
   selected?: boolean;
   today?: boolean;
   outside?: boolean;
+  highlighted?: boolean;
   inRange?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
@@ -134,7 +139,7 @@ export function CalendarDayButton({
         {
           backgroundColor: isSelected
             ? theme.colors.primary
-            : inRange || today
+            : inRange || today || highlighted
               ? theme.colors.muted
               : theme.colors.transparent,
           borderColor: today ? theme.colors.border : theme.colors.transparent,

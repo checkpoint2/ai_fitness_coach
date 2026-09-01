@@ -177,14 +177,23 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
+    maxWidth: '100%',
+    minWidth: 0,
   },
   screen: {
     flex: 1,
+    maxWidth: '100%',
+    minWidth: 0,
   },
   scrollContent: {
     flexGrow: 1,
+    maxWidth: '100%',
+    minWidth: 0,
+    width: '100%',
   },
   scrollView: {
     flex: 1,
+    maxWidth: '100%',
+    minWidth: 0,
   },
 });

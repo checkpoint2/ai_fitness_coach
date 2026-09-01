@@ -11,16 +11,23 @@ import { useUiTheme } from '@/components/ui/theme';
 import { Typography } from '@/components/ui/typography';
 import { TEST_IDS } from '@/constants/testIds';
 import { useAuth } from '@/features/auth';
+import { useDiary } from '@/features/diary';
 import { useOnboarding } from '@/features/onboarding';
 import { ProfileButton } from '@/features/pilot-shell';
+import { useTraining } from '@/features/training';
+import { summarizeRecordedIntake } from '../day-intake';
 
 export function TodayScreen() {
   const auth = useAuth();
+  const diary = useDiary();
   const onboarding = useOnboarding();
   const router = useRouter();
   const theme = useUiTheme();
+  const training = useTraining();
   const firstName = auth.user?.displayName?.trim().split(/\s+/)[0];
+  const intake = summarizeRecordedIntake(diary.entries);
   const completionStartedForRevision = useRef<number | null>(null);
+  const todayTraining = training.sessions.filter((session) => isToday(session.occurredAt));
 
   useEffect(() => {
     const snapshot = onboarding.snapshot;
@@ -70,7 +77,11 @@ export function TodayScreen() {
                 Энергетический баланс
               </Typography>
               <Typography variant="caption" muted>
-                Предварительно · данных пока мало
+                {diary.dayConfirmation
+                  ? 'Данные за день подтверждены · энергетический результат ещё не рассчитан'
+                  : diary.entries.length === 0
+                    ? 'Предварительно · данных пока мало'
+                    : 'Предварительно · полный расход и дневная цель ещё не рассчитаны'}
               </Typography>
             </View>
             <Surface padded="sm" rounded="full" tone="muted">
@@ -81,14 +92,23 @@ export function TodayScreen() {
           </View>
 
           <View style={[styles.metrics, { gap: theme.spacing.md }]}>
-            <EnergyMetric label="Получено" value="— ккал" />
-            <EnergyMetric label="Расход" value="≈ — ккал" />
+            <EnergyMetric
+              label="Получено"
+              value={intake.recordedCaloriesKcal > 0
+                ? `${intake.recordedCaloriesKcal} ккал${intake.hasNutritionWithoutCalories ? '+' : ''}`
+                : '— ккал'}
+            />
+            <EnergyMetric label="Расход" value="не рассчитан" />
             <EnergyMetric label="Баланс" value="— ккал" />
           </View>
 
           <View style={[styles.row, { gap: theme.spacing.sm }]}>
             <Typography style={styles.copy} variant="bodySm" muted>
-              Добавьте подтверждённые записи, чтобы увидеть результат дня.
+              {diary.dayConfirmation
+                ? 'Полнота отмечена. Цвет останется серым, пока нет подтверждённой цели и полного расхода.'
+                : diary.entries.length === 0
+                  ? 'Добавьте подтверждённые записи, чтобы начать собирать результат дня.'
+                  : 'Записи учтены. Цвет останется серым, пока нет подтверждённой цели и полного расхода.'}
             </Typography>
             <View style={[styles.row, { gap: theme.spacing.xs }]}>
               <Typography variant="bodySm" weight="700">
@@ -105,30 +125,40 @@ export function TodayScreen() {
       </UiPressable>
 
       <SectionCard
-        description="Сначала соберём цель, привычный ритм и ограничения, затем покажем план."
+        description="Питание и активность сохраняются в постоянной истории и доступны после нового входа."
         title="Главное сейчас">
         <Typography variant="bodyLg" weight="700">
-          Настроить первый персональный план
+          Записать сегодняшний день
         </Typography>
-        <Button disabled>Начать настройку</Button>
-        <Typography variant="caption" muted>
-          Действие станет доступно после подключения мобильного onboarding.
-        </Typography>
+        <Button onPress={() => router.push('/diary')}>Открыть дневник</Button>
       </SectionCard>
 
       <SectionCard
         description="Здесь появятся питание, тренировка, восстановление и другие подтверждённые действия."
         title="План дня">
-        <Typography variant="bodySm" muted>
-          На сегодня ещё нет сохранённого плана.
-        </Typography>
+        {todayTraining.length > 0 ? (
+          <>
+            <Typography variant="bodyLg" weight="700">Тренировка зафиксирована</Typography>
+            {todayTraining.map((session) => (
+              <Typography key={session.id} variant="bodySm" muted>
+                {session.title} · {session.exercises.length} упр.
+              </Typography>
+            ))}
+          </>
+        ) : (
+          <Typography variant="bodySm" muted>
+            Подтверждённой тренировки на сегодня пока нет. Конкретный план не назначается до проверки библиотеки упражнений.
+          </Typography>
+        )}
+        <Button variant="outline" onPress={() => router.push('/plan')}>Открыть тренировки</Button>
       </SectionCard>
 
       <SectionCard title="Быстрое добавление">
         <View style={[styles.quickActions, { gap: theme.spacing.sm }]}>
-          <Button disabled variant="outline" style={styles.quickAction}>Еда</Button>
-          <Button disabled variant="outline" style={styles.quickAction}>Активность</Button>
-          <Button disabled variant="outline" style={styles.quickAction}>Вес и замеры</Button>
+          <Button variant="outline" style={styles.quickAction} onPress={() => router.push('/diary')}>Еда</Button>
+          <Button variant="outline" style={styles.quickAction} onPress={() => router.push('/diary')}>Активность</Button>
+          <Button variant="outline" style={styles.quickAction} onPress={() => router.push('/diary')}>Вес и замеры</Button>
+          <Button variant="outline" style={styles.quickAction} onPress={() => router.push('/plan')}>Тренировка</Button>
           <Button disabled variant="outline" style={styles.quickAction}>Вопрос тренеру</Button>
         </View>
       </SectionCard>
@@ -153,6 +183,14 @@ function formatToday() {
   }).format(new Date());
 
   return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function isToday(value: string) {
+  const date = new Date(value);
+  const today = new Date();
+  return date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate();
 }
 
 const styles = StyleSheet.create({

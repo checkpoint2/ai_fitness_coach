@@ -13,6 +13,7 @@ import {
   setStoredRefreshToken,
 } from '@/features/auth';
 import { AvatarProvider, createExpoAvatarPicker } from '@/features/avatar';
+import { DiaryProvider } from '@/features/diary';
 // Subscriptions are turned off; see docs/IAP.md before uncommenting.
 // import { IapProvider } from '@/features/billing';
 import {
@@ -27,6 +28,7 @@ import {
 } from '@/features/notifications';
 import { createMobileApis, SessionController } from './api';
 import { OnboardingProvider } from '@/features/onboarding';
+import { TrainingProvider } from '@/features/training';
 import { authTransportForPlatform } from './auth-transport';
 import { uploadFileAccessForPlatform } from './upload-file-access';
 
@@ -74,11 +76,15 @@ export function AppProviders({ children }: PropsWithChildren) {
         {/* Wrap this in <IapProvider api={apis.billing}> when turning subscriptions on. */}
         <AvatarProvider api={apis.avatar} picker={avatarPicker} send={uploads.send}>
           <OnboardingProvider api={apis.onboarding}>
-            <PushNotificationsProvider
-              api={apis.notifications}
-              registrationCoordinator={pushRegistrationCoordinator}>
-              {children}
-            </PushNotificationsProvider>
+            <DiaryProvider api={apis.diary}>
+              <TrainingProvider api={apis.training}>
+                <PushNotificationsProvider
+                  api={apis.notifications}
+                  registrationCoordinator={pushRegistrationCoordinator}>
+                  {children}
+                </PushNotificationsProvider>
+              </TrainingProvider>
+            </DiaryProvider>
           </OnboardingProvider>
         </AvatarProvider>
       </AuthProvider>

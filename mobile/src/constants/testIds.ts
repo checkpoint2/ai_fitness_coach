@@ -22,6 +22,16 @@ export const TEST_IDS = {
     openButton: 'details.open-button',
     screen: 'details.screen',
   },
+  diary: {
+    activityButton: 'diary.activity-button',
+    confirmDayButton: 'diary.confirm-day-button',
+    descriptionInput: 'diary.description-input',
+    measurementButton: 'diary.measurement-button',
+    nutritionButton: 'diary.nutrition-button',
+    reopenDayButton: 'diary.reopen-day-button',
+    saveButton: 'diary.save-button',
+    screen: 'diary.screen',
+  },
   onboarding: {
     allergiesNoneButton: 'onboarding.allergies-none-button',
     calculationSexDeclinedButton: 'onboarding.calculation-sex-declined-button',
@@ -75,6 +85,7 @@ export const TEST_IDS = {
     screen: 'profile.screen',
   },
   progress: {
+    daySummary: 'progress.day-summary',
     energyCalendar: 'progress.energy-calendar',
     screen: 'progress.screen',
   },
@@ -93,5 +104,13 @@ export const TEST_IDS = {
   today: {
     energyCard: 'today.energy-card',
     screen: 'today.screen',
+  },
+  training: {
+    addButton: 'training.add-button',
+    catalogCard: 'training.catalog-card',
+    saveButton: 'training.save-button',
+    screen: 'training.screen',
+    video: 'training.video',
+    videoToggle: 'training.video-toggle',
   },
 } as const;
