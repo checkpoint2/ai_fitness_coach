@@ -3,6 +3,7 @@ import {
   bootstrapDevelopmentAccounts,
   type DevelopmentSeedAccounts,
 } from '../src/modules/users/infrastructure/development-bootstrap'
+import { seedApprovedPilotExerciseCatalog } from '../src/modules/training/infrastructure/development-catalog'
 
 // The seed deliberately grants no entitlement: reaching the app must not depend on a
 // subscription, so products that never add billing still get a working demo login.
@@ -11,6 +12,7 @@ export async function bootstrapDevelopmentData(
   accounts: DevelopmentSeedAccounts,
 ) {
   const seeded = await bootstrapDevelopmentAccounts(db, accounts)
+  await seedApprovedPilotExerciseCatalog(db)
 
   return {
     admin: { email: seeded.admin.email, role: seeded.admin.role },

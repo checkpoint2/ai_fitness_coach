@@ -75,7 +75,11 @@ model FitnessGoal {
 model BodyMeasurement {
   id              String                @id @default(dbgenerated("uuidv7()")) @db.Uuid
   userId          String                @map("user_id") @db.Uuid
+  clientMutationId String?               @map("client_mutation_id") @db.Uuid
+  mutationHash    String?               @map("mutation_hash")
+  revision        Int                   @default(1)
   kind            BodyMeasurementKind
+  label           String?
   value           Decimal               @db.Decimal(8, 3)
   unit            BodyMeasurementUnit
   truthKind       PersistentTruthKind   @map("truth_kind")
@@ -83,8 +87,11 @@ model BodyMeasurement {
   isApproximate   Boolean               @default(false) @map("is_approximate")
   observedAt      DateTime              @map("observed_at")
   recordedAt      DateTime              @default(now()) @map("recorded_at")
+  confirmedAt     DateTime?             @map("confirmed_at")
+  updatedAt       DateTime              @default(now()) @updatedAt @map("updated_at")
   user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade, map: "body_measurements_user_id_fkey")
 
+  @@unique([userId, clientMutationId], map: "body_measurements_user_id_client_mutation_id_key")
   @@index([userId, kind, observedAt], map: "body_measurements_user_id_kind_observed_at_idx")
   @@map("body_measurements")
 }
@@ -252,7 +259,13 @@ enum FitnessTrainingGoal {
 enum BodyMeasurementKind {
   weight
   waist
+  hips
+  chest
+  arm
+  thigh
+  neck
   body_fat
+  custom
 
   @@map("body_measurement_kind")
 }

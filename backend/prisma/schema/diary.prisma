@@ -1,0 +1,81 @@
+model NutritionEntry {
+  id                    String               @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId                String               @map("user_id") @db.Uuid
+  clientMutationId      String               @map("client_mutation_id") @db.Uuid
+  mutationHash          String               @map("mutation_hash")
+  revision              Int                  @default(1)
+  description           String               @db.Text
+  category              String?
+  amountText            String?              @map("amount_text")
+  occurredAt            DateTime             @map("occurred_at") @db.Timestamptz(3)
+  sourceKind            DiarySourceKind      @default(structured) @map("source_kind")
+  metricsTruthKind      PersistentTruthKind? @map("metrics_truth_kind")
+  caloriesKcal          Decimal?             @map("calories_kcal") @db.Decimal(10, 2)
+  proteinGrams          Decimal?             @map("protein_grams") @db.Decimal(10, 2)
+  fatGrams              Decimal?             @map("fat_grams") @db.Decimal(10, 2)
+  carbohydrateGrams     Decimal?             @map("carbohydrate_grams") @db.Decimal(10, 2)
+  confirmedAt           DateTime             @map("confirmed_at") @db.Timestamptz(3)
+  createdAt             DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user                  User                 @relation(fields: [userId], references: [id], onDelete: Cascade, map: "nutrition_entries_user_id_fkey")
+
+  @@unique([userId, clientMutationId], map: "nutrition_entries_user_id_client_mutation_id_key")
+  @@index([userId, occurredAt(sort: Desc)], map: "nutrition_entries_user_id_occurred_at_idx")
+  @@map("nutrition_entries")
+}
+
+model ActivityEntry {
+  id                    String               @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId                String               @map("user_id") @db.Uuid
+  clientMutationId      String               @map("client_mutation_id") @db.Uuid
+  mutationHash          String               @map("mutation_hash")
+  revision              Int                  @default(1)
+  description           String               @db.Text
+  occurredAt            DateTime             @map("occurred_at") @db.Timestamptz(3)
+  durationMinutes       Int?                 @map("duration_minutes")
+  sourceKind            DiarySourceKind      @default(structured) @map("source_kind")
+  expenditureTruthKind  PersistentTruthKind? @map("expenditure_truth_kind")
+  expenditureKcal       Decimal?             @map("expenditure_kcal") @db.Decimal(10, 2)
+  confirmedAt           DateTime             @map("confirmed_at") @db.Timestamptz(3)
+  createdAt             DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user                  User                 @relation(fields: [userId], references: [id], onDelete: Cascade, map: "activity_entries_user_id_fkey")
+
+  @@unique([userId, clientMutationId], map: "activity_entries_user_id_client_mutation_id_key")
+  @@index([userId, occurredAt(sort: Desc)], map: "activity_entries_user_id_occurred_at_idx")
+  @@map("activity_entries")
+}
+
+model DiaryDayConfirmation {
+  id                    String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId                String   @map("user_id") @db.Uuid
+  clientMutationId      String   @map("client_mutation_id") @db.Uuid
+  mutationHash          String   @map("mutation_hash")
+  localDate             DateTime @map("local_date") @db.Date
+  timeZone              String   @map("time_zone")
+  revision              Int      @default(1)
+  nutritionComplete     Boolean  @map("nutrition_complete")
+  activityComplete      Boolean  @map("activity_complete")
+  confirmedAt           DateTime @map("confirmed_at") @db.Timestamptz(3)
+  createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "diary_day_confirmations_user_id_fkey")
+
+  @@unique([userId, localDate], map: "diary_day_confirmations_user_id_local_date_key")
+  @@unique([userId, clientMutationId], map: "diary_day_confirmations_user_id_client_mutation_id_key")
+  @@index([userId, localDate(sort: Desc)], map: "diary_day_confirmations_user_id_local_date_idx")
+  @@map("diary_day_confirmations")
+}
+
+enum DiarySourceKind {
+  structured
+  user_text
+  voice_transcript
+  label
+  recipe
+  food_database
+  ai_estimate
+  photo_estimate
+
+  @@map("diary_source_kind")
+}

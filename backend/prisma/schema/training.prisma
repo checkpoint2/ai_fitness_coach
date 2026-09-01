@@ -1,0 +1,102 @@
+model WorkoutSession {
+  id               String          @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId           String          @map("user_id") @db.Uuid
+  clientMutationId String          @map("client_mutation_id") @db.Uuid
+  mutationHash     String          @map("mutation_hash")
+  revision         Int             @default(1)
+  title            String
+  occurredAt       DateTime        @map("occurred_at") @db.Timestamptz(3)
+  durationMinutes  Int?            @map("duration_minutes")
+  effort           WorkoutEffort?
+  notes            String?         @db.Text
+  sourceKind       DiarySourceKind @default(structured) @map("source_kind")
+  confirmedAt      DateTime        @map("confirmed_at") @db.Timestamptz(3)
+  createdAt        DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade, map: "workout_sessions_user_id_fkey")
+  exercises        WorkoutExercise[]
+
+  @@unique([userId, clientMutationId], map: "workout_sessions_user_id_client_mutation_id_key")
+  @@index([userId, occurredAt(sort: Desc)], map: "workout_sessions_user_id_occurred_at_idx")
+  @@map("workout_sessions")
+}
+
+model WorkoutExercise {
+  id            String         @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  sessionId     String         @map("session_id") @db.Uuid
+  position      Int
+  name          String
+  equipmentText String?        @map("equipment_text")
+  notes         String?        @db.Text
+  session       WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade, map: "workout_exercises_session_id_fkey")
+  sets          WorkoutSet[]
+
+  @@unique([sessionId, position], map: "workout_exercises_session_id_position_key")
+  @@map("workout_exercises")
+}
+
+model WorkoutSet {
+  id              String          @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  exerciseId      String          @map("exercise_id") @db.Uuid
+  position        Int
+  reps            Int?
+  loadKg          Decimal?        @map("load_kg") @db.Decimal(10, 2)
+  durationSeconds Int?            @map("duration_seconds")
+  completed       Boolean
+  exercise        WorkoutExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade, map: "workout_sets_exercise_id_fkey")
+
+  @@unique([exerciseId, position], map: "workout_sets_exercise_id_position_key")
+  @@map("workout_sets")
+}
+
+/// Versioned editorial exercise content. Only a complete `active` version may cross the
+/// authenticated catalog boundary; draft/reviewed rows remain internal preparation material.
+model ExerciseDefinition {
+  id                    String                       @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  slug                  String
+  contentVersion        Int                          @map("content_version")
+  activeKey             String?                      @unique(map: "exercise_definitions_active_key_key") @map("active_key")
+  status                ExerciseContentStatus        @default(draft)
+  name                  String
+  environments          Json
+  equipment             Json
+  instructions          String                       @db.Text
+  techniqueCues         Json                         @map("technique_cues")
+  commonMistakes        Json                         @map("common_mistakes")
+  demonstrationKind     ExerciseDemonstrationKind?   @map("demonstration_kind")
+  demonstrationAssetKey String?                      @map("demonstration_asset_key")
+  demonstrationAltText  String?                      @map("demonstration_alt_text")
+  reviewReference       String?                      @map("review_reference")
+  reviewedAt            DateTime?                    @map("reviewed_at") @db.Timestamptz(3)
+  createdAt             DateTime                     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime                     @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@unique([slug, contentVersion], map: "exercise_definitions_slug_content_version_key")
+  @@index([status, name], map: "exercise_definitions_status_name_idx")
+  @@map("exercise_definitions")
+}
+
+enum WorkoutEffort {
+  easy
+  right
+  hard
+  pain
+
+  @@map("workout_effort")
+}
+
+enum ExerciseContentStatus {
+  draft
+  reviewed
+  active
+  retired
+
+  @@map("exercise_content_status")
+}
+
+enum ExerciseDemonstrationKind {
+  loop_animation
+  short_video
+
+  @@map("exercise_demonstration_kind")
+}

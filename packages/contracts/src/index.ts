@@ -1,4 +1,6 @@
 export * from './auth'
+export * from './diary'
+export * from './training'
 export * from './errors'
 export * from './iap'
 export * from './notifications'

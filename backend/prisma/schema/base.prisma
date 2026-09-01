@@ -39,6 +39,10 @@ model User {
   fitnessPlans        FitnessPlan[]
   coachNotes          CoachNote[]
   onboardingMutationReceipts OnboardingMutationReceipt[]
+  nutritionEntries           NutritionEntry[]
+  activityEntries            ActivityEntry[]
+  diaryDayConfirmations      DiaryDayConfirmation[]
+  workoutSessions            WorkoutSession[]
 
   @@index([role], map: "users_role_idx")
   @@map("users")

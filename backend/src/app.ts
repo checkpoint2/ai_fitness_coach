@@ -9,6 +9,7 @@ import type { AppEnv } from './env'
 import { errorResponse, handleError, validationErrorHook } from './http/errors'
 import { createFixedWindowRateLimit, createIngressSecurity } from './http/security'
 import { createAuthModule, type AuthHttpEnv } from './modules/auth'
+import { createDiaryModule } from './modules/diary'
 // Subscriptions are turned off; see docs/IAP.md before uncommenting.
 // import {
 //   createBillingModule,
@@ -17,6 +18,7 @@ import { createAuthModule, type AuthHttpEnv } from './modules/auth'
 // } from './modules/billing'
 import { createNotificationsModule } from './modules/notifications'
 import { createOnboardingModule } from './modules/onboarding'
+import { createTrainingModule } from './modules/training'
 import { createUploadsModule } from './modules/uploads'
 import { createUsersModule } from './modules/users'
 import {
@@ -91,6 +93,14 @@ export function createApp({
     db: prisma,
     requireAuth: auth.requireAuth,
   })
+  const diary = createDiaryModule({
+    db: prisma,
+    requireAuth: auth.requireAuth,
+  })
+  const training = createTrainingModule({
+    db: prisma,
+    requireAuth: auth.requireAuth,
+  })
   const app = new OpenAPIHono<AuthHttpEnv>({ defaultHook: validationErrorHook })
   app.openAPIRegistry.registerComponent('securitySchemes', 'BearerAuth', {
     type: 'http',
@@ -134,6 +144,8 @@ export function createApp({
     app.use('/api/admin/*', middleware)
     app.use('/api/uploads/*', middleware)
     app.use('/api/onboarding/*', middleware)
+    app.use('/api/diary/*', middleware)
+    app.use('/api/training/*', middleware)
   }
   // Ingress budget for the subscription routes, uncomment together with them:
   // for (const middleware of createIngressSecurity({
@@ -189,6 +201,8 @@ export function createApp({
   app.route('/api/notifications', notifications.createRoutes(auth.authenticateAccessToken))
   app.route('/api/uploads', uploads.routes)
   app.route('/api/onboarding', onboarding.routes)
+  app.route('/api/diary', diary.routes)
+  app.route('/api/training', training.routes)
   // app.route('/api/webhooks', billing.webhookRoutes)
 
   // Only the filesystem driver needs the backend to serve the URLs it signs. With an S3 driver
