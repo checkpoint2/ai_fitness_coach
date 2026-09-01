@@ -344,6 +344,21 @@ test('browser auth coordinator fails closed in a browser without Web Locks', asy
   expect(mutationRan).toBe(false);
 });
 
+test('browser auth coordinator permits the explicit local-development fallback', async () => {
+  let mutationRan = false;
+  const coordinator = createBrowserAuthCoordinator(
+    () => undefined,
+    () => true,
+    () => true,
+  );
+
+  await expect(coordinator(async () => {
+    mutationRan = true;
+    return 'done';
+  })).resolves.toBe('done');
+  expect(mutationRan).toBe(true);
+});
+
 test('browser session coordinator accepts remote events and advances its monotonic epoch', async () => {
   if (typeof BroadcastChannel === 'undefined') return;
 

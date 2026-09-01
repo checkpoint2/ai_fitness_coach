@@ -21,6 +21,7 @@ export class BrowserAuthLockUnavailableError extends Error {
 export function createBrowserAuthCoordinator(
   getLockManager: () => BrowserLockManager | undefined = currentBrowserLockManager,
   isBrowserContext: () => boolean = currentBrowserContext,
+  allowInProcessBrowserFallback: () => boolean = localDevelopmentFallbackEnabled,
 ): BrowserAuthCoordinator {
   let inProcessTail = Promise.resolve();
 
@@ -30,7 +31,7 @@ export function createBrowserAuthCoordinator(
       return locks.request(browserAuthLockName, { mode: 'exclusive' }, mutation);
     }
 
-    if (isBrowserContext()) {
+    if (isBrowserContext() && !allowInProcessBrowserFallback()) {
       throw new BrowserAuthLockUnavailableError();
     }
 
@@ -52,4 +53,9 @@ function currentBrowserLockManager() {
 
 function currentBrowserContext() {
   return typeof window !== 'undefined';
+}
+
+function localDevelopmentFallbackEnabled() {
+  return process.env.NODE_ENV !== 'production'
+    && process.env.EXPO_PUBLIC_ALLOW_INSECURE_BROWSER_AUTH === '1';
 }
