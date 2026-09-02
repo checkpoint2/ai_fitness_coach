@@ -27,6 +27,44 @@ const javaScriptMimeTypes = new Set([
 
 export const temporaryAuditExceptions = [
   {
+    advisoryId: 'GHSA-vcc3-ghjq-m6fr',
+    allowedDirectConsumers: ['query-string'],
+    allowedResolutions: ['decode-uri-component@0.2.2'],
+    allowedWorkspaces: ['mobile'],
+    expiresOn: '2026-09-15',
+    packageName: 'decode-uri-component',
+    reason:
+      'Owner temporarily accepts the Moderate CPU exhaustion/application unresponsiveness risk; code execution and data disclosure are not confirmed. The production mobile runtime is potentially reachable through URL/deep-link parsing via @ai-fitness-coach/mobile -> expo-router@57.0.17 -> query-string@7.1.3 -> decode-uri-component@0.2.2. Patched 0.5.0 is outside query-string 7.1.3\'s semver range and changed from CommonJS to ESM, so a blind override may break mobile runtime. Prefer a compatible upstream Expo Router/query-string update. Do not extend beyond 2026-09-15 without renewed diagnosis and owner approval; this exception does not authorize a public production release without another security review.',
+    severity: 'moderate',
+  },
+  {
+    advisoryId: 'GHSA-3f6p-5ww8-9rcr',
+    allowedDirectConsumers: ['prisma'],
+    allowedResolutions: ['mysql2@3.15.3'],
+    allowedWorkspaces: ['backend'],
+    expiresOn: '2026-09-09',
+    forbiddenRepositoryPatterns: [
+      {
+        label: 'MySQL/MariaDB Prisma provider',
+        pathPattern: /\.prisma$/,
+        sourcePattern: /\bprovider\s*=\s*["'](?:mysql|mariadb)["']/i,
+      },
+      {
+        label: 'MySQL/MariaDB connection string',
+        sourcePattern: /\b(?:mysql|mariadb):\/\//i,
+      },
+      {
+        label: 'MySQL/MariaDB deployment path',
+        pathPattern: /(?:^|\/)(?:Dockerfile[^/]*|docker-compose[^/]*|compose[^/]*|infra\/.*|\.github\/workflows\/.*)$/i,
+        sourcePattern: /\b(?:mysql|mariadb)(?:[_-](?:host|url|database)|\/server|\s*:)/i,
+      },
+    ],
+    packageName: 'mysql2',
+    reason:
+      'Owner temporarily accepts GHSA-3f6p-5ww8-9rcr (High, CVSS 8.2; affected <3.22.0, patched 3.22.0), which can disclose a database password when a connection switches to mysql_clear_password without TLS. mysql2@3.15.3 is present in the backend artifact through @ai-fitness-coach/backend -> prisma@7.9.0 -> mysql2@3.15.3, but the application and infrastructure use PostgreSQL and have no mysql2 imports or MySQL connections. Prisma 7.9.0 pins mysql2@3.15.3, and checked Prisma 7.9.1 and 7.10.0 retain it; compatibility of an override to 3.22.0 is unconfirmed. Prefer a compatible Prisma CLI/client update using mysql2 >=3.22.0. This exception becomes invalid if a MySQL/MariaDB provider, connection string, mysql2 import, or deployment path appears. It does not authorize a public production release without another security review; before production, separately assess removing Prisma CLI and mysql2 from the runtime Docker image.',
+    severity: 'high',
+  },
+  {
     advisoryId: 'GHSA-w3rx-r6r6-pgpr',
     allowedDirectConsumers: ['metro'],
     allowedResolutions: ['image-size@1.2.1'],
@@ -57,6 +95,7 @@ export function reviewAudit(
     exceptions = temporaryAuditExceptions,
     now = new Date(),
     packageExposures,
+    repositoryGuardMatches = new Map(),
     sourceImports = new Map(),
   },
 ) {
@@ -131,6 +170,14 @@ export function reviewAudit(
       if (importedBy?.size > 0) {
         errors.push(
           `Temporary exception cannot cover source imports of ${packageName}: ${[...importedBy].sort().join(', ')}.`,
+        )
+        isAccepted = false
+      }
+
+      const guardMatches = repositoryGuardMatches.get(packageName)
+      if (guardMatches?.size > 0) {
+        errors.push(
+          `Temporary exception cannot cover guarded repository evidence for ${packageName}: ${[...guardMatches].sort().join(', ')}.`,
         )
         isAccepted = false
       }
@@ -223,9 +270,14 @@ function runDependencyAudit() {
     readRepositorySourceFiles(repositoryRoot),
     guardedPackages,
   )
+  const repositoryGuardMatches = findForbiddenRepositoryPatterns(
+    readRepositoryGuardFiles(repositoryRoot),
+    temporaryAuditExceptions,
+  )
   const result = reviewAudit(report, {
     directDependencies,
     packageExposures,
+    repositoryGuardMatches,
     sourceImports,
   })
 
@@ -371,6 +423,49 @@ export function readRepositorySourceFiles(root) {
   return files.stdout
     .split('\0')
     .filter((filePath) => sourceExtension.test(filePath))
+    .map((filePath) => ({
+      path: filePath,
+      source: readFileSync(path.join(root, filePath), 'utf8'),
+    }))
+}
+
+export function findForbiddenRepositoryPatterns(files, exceptions) {
+  const findings = new Map()
+
+  for (const exception of exceptions) {
+    for (const guard of exception.forbiddenRepositoryPatterns ?? []) {
+      for (const file of files) {
+        if (guard.pathPattern && !guard.pathPattern.test(file.path)) continue
+        if (!guard.sourcePattern.test(file.source)) continue
+        const matches = findings.get(exception.packageName) ?? new Set()
+        matches.add(`${guard.label} in ${file.path}`)
+        findings.set(exception.packageName, matches)
+      }
+    }
+  }
+
+  return findings
+}
+
+export function readRepositoryGuardFiles(root) {
+  const files = spawnSync(
+    'git',
+    ['ls-files', '--cached', '--others', '--exclude-standard', '-z'],
+    { cwd: root, encoding: 'utf8' },
+  )
+  if (files.error) throw files.error
+  if (files.signal || files.status !== 0) {
+    throw new Error(
+      `Could not enumerate repository guard files${files.signal ? `: terminated by ${files.signal}` : `: git exited ${files.status}`}.`,
+    )
+  }
+
+  return files.stdout
+    .split('\0')
+    .filter(Boolean)
+    .filter((filePath) =>
+      !['bun.lock', 'scripts/dependency-audit.mjs', 'scripts/dependency-audit.test.mjs'].includes(filePath),
+    )
     .map((filePath) => ({
       path: filePath,
       source: readFileSync(path.join(root, filePath), 'utf8'),

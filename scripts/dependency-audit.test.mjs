@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import {
+  findForbiddenRepositoryPatterns,
   findForbiddenSourceImports,
   parseAuditReport,
   readDirectDependencies,
@@ -178,6 +179,46 @@ describe('dependency audit exceptions', () => {
     )
     expect(result.errors).toContain(
       'Temporary exception cannot cover source imports of image-size: backend/src/runtime.ts.',
+    )
+  })
+
+  test('rejects repository configuration guarded by an advisory exception', () => {
+    const mysqlException = {
+      ...exception,
+      packageName: 'mysql2',
+      forbiddenRepositoryPatterns: [
+        {
+          label: 'MySQL/MariaDB Prisma provider',
+          pathPattern: /\.prisma$/,
+          sourcePattern: /\bprovider\s*=\s*["'](?:mysql|mariadb)["']/i,
+        },
+        {
+          label: 'MySQL/MariaDB connection string',
+          sourcePattern: /\b(?:mysql|mariadb):\/\//i,
+        },
+      ],
+    }
+    const repositoryGuardMatches = findForbiddenRepositoryPatterns(
+      [
+        { path: 'backend/prisma/schema.prisma', source: 'provider = "mysql"' },
+        { path: 'infra/runtime.env', source: 'DATABASE_URL=mysql://db/app' },
+      ],
+      [mysqlException],
+    )
+    const result = reviewAudit(
+      { mysql2: [{ ...advisory, url: 'https://github.com/advisories/GHSA-w3rx-r6r6-pgpr' }] },
+      {
+        ...auditOptions(),
+        exceptions: [mysqlException],
+        packageExposures: new Map([
+          ['mysql2', auditOptions().packageExposures.get('image-size')],
+        ]),
+        repositoryGuardMatches,
+      },
+    )
+
+    expect(result.errors).toContain(
+      'Temporary exception cannot cover guarded repository evidence for mysql2: MySQL/MariaDB Prisma provider in backend/prisma/schema.prisma, MySQL/MariaDB connection string in infra/runtime.env.',
     )
   })
 
